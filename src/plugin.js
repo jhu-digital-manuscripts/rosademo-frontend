@@ -16,7 +16,7 @@ class DemoComponent extends React.Component {
   }
 
   sendRequest() {
-    // Bound to `this` to make sure that we dont lose class context
+    // Bound to `this` to make sure that we don't lose class context
     fetch(
       "https://rosetest.library.jhu.edu/rosademo/wa/rose/SeldenSupra57/1r/canvas",
       {
@@ -59,7 +59,7 @@ class DemoComponent extends React.Component {
 
 export default {
   name: "Demo",
-  target: "WindowSideBarInfoPanel",
+  target: "WindowSideBarAnnotationPanel",
   mode: "wrap",
   component: DemoComponent
 };
