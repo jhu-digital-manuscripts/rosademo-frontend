@@ -54,7 +54,7 @@ export default function SimpleTabs() {
           name: "AnnotationsTabBar",
           target: "WindowSideBarAnnotationPanel",
           mode: "wrap",
-          component: RoseDemoAnnotations,
+          component: SimpleTabs,
         }
   }
 
