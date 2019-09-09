@@ -1,6 +1,6 @@
 import React from "react";
 
-class DemoComponent extends React.Component {
+class RoseDemoAnnotations extends React.Component {
   constructor(props) {
     // For use later
     super(props);
@@ -57,9 +57,4 @@ class DemoComponent extends React.Component {
   }
 }
 
-export default {
-  name: "Demo",
-  target: "WindowSideBarAnnotationPanel",
-  mode: "wrap",
-  component: DemoComponent
-};
+export default RoseDemoAnnotations;
