@@ -1,1 +1,1 @@
-export testPlugin from './plugins/test-plugin';
+export testPlugin from './plugins/test/test-plugin';
