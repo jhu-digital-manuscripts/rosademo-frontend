@@ -23,4 +23,4 @@ If not done already, you'll have to install all of the project dependencies usin
 
 ## Credit
 
-Much credit goes to [GroovinChip]<https://github.com/groovinchip> with the help of [mejackreed]<https://github.com/mejackreed> for their original work at <https://github.com/GroovinChip/RoseDemo-FrontEnd>.
+Much credit goes to [GroovinChip](https://github.com/groovinchip) with the help of [mejackreed](https://github.com/mejackreed) for their original work at <https://github.com/GroovinChip/RoseDemo-FrontEnd>.
