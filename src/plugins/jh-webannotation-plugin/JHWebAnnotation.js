@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import isEqual from 'lodash/isEqual';
+import { getRosaWebAnnotations } from './webAnnotationUtils';
 
 export default class JHWebAnnotation extends Component {
-
   constructor(props) {
     super(props);
     this.fetchAnnotations = this.fetchAnnotations.bind(this);
   }
 
   fetchAnnotations() {
-    console.log('%cWill fetch annotations now', 'color:green;');
+    const { canvases, receiveAnnotation } = this.props;
+    getRosaWebAnnotations(canvases, receiveAnnotation);
   }
 
   componentDidMount() {
-    const { canvases } = this.props;
-    this.fetchAnnotations(canvases);
+    this.fetchAnnotations();
   }
 
   componentDidUpdate(prevProps) {
@@ -24,7 +24,7 @@ export default class JHWebAnnotation extends Component {
     const prevCanvasIds = prevProps.canvases.map(canvas => canvas.id);
 
     if (!isEqual(currentCanvasIds, prevCanvasIds)) {
-      this.fetchAnnotations(canvases);
+      this.fetchAnnotations();
     }
   }
 
