@@ -34,6 +34,14 @@ export function getRosaWebAnnotations(canvases, receiveAnnotation) {
   });
 }
 
+/**
+ * Do some processing on what we know to be data formatted as Web Annotation.
+ * In some cases, we may need to adjust the annotation target(s) a bit to make
+ * Mirador understand.
+ *
+ * @param {array} annotations list of raw web annotations
+ * @returns {array} processed list of annotations
+ */
 function _process_annotations(annotations) {
   // Sometimes 'annotations' will actually be a single Annotation object
   if (!Array.isArray(annotations)) {
@@ -73,10 +81,31 @@ function _merge_georef_bodies(bodies) {
   const id = bodies.filter(b => b.purpose === 'identifying').map(b => b.source)[0];
   const tag = bodies.filter(b => b.purpose === 'tagging').map(b => b.value)[0];
 
+  let value = '<div class="annotation georef">';
+
+  if (id) {
+    value += `<a href="${id}">`;
+  }
+  if (tag) {
+    value += tag;
+  }
+  if (comment) {
+    value += ` (${comment})`;
+  }
+  if (!tag && !comment) {
+    value += id;
+  }
+  if (id) {
+    value += '</a>';
+  }
+
+  value += '</div>';
+
   return {
     type: 'TextualBody',
     format: 'text/html',
-    value: `<div class="annotation georef"><a href="${id}">${tag} (${comment})</a></div>`
+    value
+    // value: `<div class="annotation georef"><a href="${id}">${tag} (${comment})</a></div>`
   };
 }
 
@@ -107,3 +136,13 @@ function _process_georef_targets(targets) {
 
   return target;
 }
+
+/**
+ * Use the provided Pleiades ID to get GeoJSON from the Pleiades API
+ * 
+ * @param {string} url 
+ */
+// function _pleiades2json(url) {
+//   // TODO: make this URL configurable?
+//   fetch(`${url}/json`);
+// }
