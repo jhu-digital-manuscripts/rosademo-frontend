@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import isEqual from 'lodash/isEqual';
 import { getRosaWebAnnotations } from './webAnnotationUtils';
 
-export default class JHWebAnnotation extends Component {
+export default class JHAnnotationFetcher extends Component {
   constructor(props) {
     super(props);
     this.fetchAnnotations = this.fetchAnnotations.bind(this);

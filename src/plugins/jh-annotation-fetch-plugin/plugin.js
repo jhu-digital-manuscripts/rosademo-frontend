@@ -1,11 +1,11 @@
-import JHWebAnnotationPlugin from './JHWebAnnotation';
+import JHAnnotationFetcher from './JHAnnotationFetcher';
 import { mapStateToProps, mapDispatchToProps } from './container';
 
 export default {
-  name: 'JHWebAnnotationPlugin',
+  name: 'JHAnnotationFetchPlugin',
   target: "WindowCanvasNavigationControls",
   mode: 'wrap',
-  component: JHWebAnnotationPlugin,
+  component: JHAnnotationFetcher,
   mapStateToProps,
   mapDispatchToProps
 };

@@ -1,5 +1,5 @@
 import Mirador from 'mirador';
-import { jhWebAnnotationPlugin } from '../../src';
+import { jhAnnotationFetchPlugin } from '../../src';
 
 const config = {
   id: 'demo',
@@ -39,7 +39,7 @@ const config = {
 };
 
 const plugins = [
-  jhWebAnnotationPlugin
+  jhAnnotationFetchPlugin
 ];
 
 const miradorInstance = Mirador.viewer(config, plugins);

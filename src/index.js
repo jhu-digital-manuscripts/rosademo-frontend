@@ -1,1 +1,1 @@
-export jhWebAnnotationPlugin from './plugins/jh-webannotation-plugin/JHWebAnnotationPlugin';
+export jhAnnotationFetchPlugin from './plugins/jh-annotation-fetch-plugin/plugin';
