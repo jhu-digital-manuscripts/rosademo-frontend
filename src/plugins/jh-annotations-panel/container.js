@@ -4,11 +4,11 @@ import flatten from 'lodash/flatten';
 
 /**
  * This is mostly a trial for a custom selector to get a feel for how they work and interact with this plugin.
- * This particular function will return all AnnotationPages or Annotationlists for the currently visible
- * canvases.
+ * This particular function will return all AnnotationPages for the currently visible canvases.
  * 
  * @param {object} state Mirador's application state
  * @param {array} canvases array of Canvas JSON objs
+ * 
  */
 function getAnnotationsForVisibleCanvases(state, canvases) {
   const { annotations } = state;
@@ -44,19 +44,71 @@ function getAnnotationsForVisibleCanvases(state, canvases) {
   const annoPages = flatten(
     canvases.map(canvas => Object.values(annotations[canvas.id]))
   );
-  debugger
-  return annoPages;
+
+  /*
+   * Not quite done pre-processing. For OUR Canvases, for some reason, there is a IIIF 2 AnnotationList already attached.
+   * Have this selector strip those out, as they are useless and contain no annotations, leaving us with only the
+   * Web Annotation compliant AnnotationPage.
+   */
+  return annoPages.filter(page => page.json && !page.json.resources && page.json.items);
+}
+
+/**
+ * 
+ * @param {object} state application state
+ * @param {array} canvases list of Canvas objects that are currently selected in a window
+ * @param {array} presentAnnotations list of annotation pages currently present on the canvases
+ * @returns {object} {
+ *    "annotationPageId": "canvas-label"
+ *  }
+ */
+function mapAnnotationPageToCanvasLabel(state, canvases, presentAnnotations) {
+  const { annotations } = state;
+
+  if (!canvases || !(Array.isArray(canvases) && canvases.length > 0)) {
+    return {};
+  }
+
+  let result = {};
+  
+  const currentCanvasIds = canvases.map(canvas => canvas.id);
+  // TODO: good lord the structure of the application state is confusing as hell
+
+  presentAnnotations.forEach((annoPage) => {
+    let match;
+    if (annoPage.json.canvas) {
+      match = annoPage.json.canvas;
+    } else {
+      match = Object.keys(annotations)
+        .filter(canvasId => Object.keys(annotations[canvasId]).includes(annoPage.id)) // Get canvasIds where there is a matching annotationId
+        .find(canvasId => currentCanvasIds.includes(canvasId)) // Get the first canvasId that is also present in the 'canvases' parameter
+    }
+    
+    // TODO: Canvas.getLabel() is a function, but it returns an I18N label (which is actually a good thing)
+    // BUT to simplify things, for now I will directly get the label as a string
+    const matchingCanvas = canvases.find(canvas => canvas.id === match);
+    // debugger
+    if (matchingCanvas && matchingCanvas.__jsonld) {
+      Object.assign(result, {
+        [annoPage.id]: matchingCanvas.__jsonld.label
+      })
+    }
+  });
+
+  return result;
 }
 
 export const mapStateToProps = (state, props) => {
   const selectedCanvases = getVisibleCanvases(state, { windowId: props.targetProps.windowId });
   const presentAnnotations = getAnnotationsForVisibleCanvases(state, selectedCanvases);
+  const canvasLabels = mapAnnotationPageToCanvasLabel(state, selectedCanvases, presentAnnotations);
 
   return ({
     annotationCount: getAnnotationResourcesByMotivation(state, { motivations: ['oa:commenting', 'sc:painting', 'commenting'], windowId: props.targetProps.windowId }).length,
     selectedCanvases,
-    presentAnnotations
-  })
+    presentAnnotations,
+    canvasLabels
+  });
 };
 
 export const mapDispatchToProps = {};

@@ -1,3 +1,28 @@
+export function getUnprocessedRosaWebAnnotations(canvases, receiveAnnotation) {
+  if (!canvases) {
+    return;
+  }
+
+  canvases.forEach((canvas) => {
+    const iiifUrl = canvas.id;
+    let annoUrl = iiifUrl.replace(/\/iiif\/|\/iiif3\//, '/wa/');
+
+    _fetchAnnotationPage(annoUrl)
+      .then((results) => {
+        const annoPage = {
+          id: annoUrl,
+          type: 'AnnotationPage',
+          canvas: iiifUrl,
+          items: results
+        };
+
+        console.log(`%cMoo! iiifUrl: ${iiifUrl}, annoUrl: ${annoUrl}`, 'color:blue;');
+        console.log(annoPage);
+        receiveAnnotation(iiifUrl, annoUrl, annoPage);
+      });
+  });
+}
+
 /**
  * Loops through all given canvases, constructs and calls a new URL that points
  * to our Web Annotation endpoint. If there are no annotations for a given canvas,
@@ -15,8 +40,7 @@ export function getRosaWebAnnotations(canvases, receiveAnnotation) {
     const iiifUrl = canvas.id;
     let annoUrl = iiifUrl.replace(/\/iiif\/|\/iiif3\//, '/wa/');
 
-    fetch(annoUrl, { method: 'GET' })
-      .then(res => res.json())
+    _fetchAnnotationPage(annoUrl)
       .then((results) => {
         // Create AnnotationPage
         const annoPage = {
@@ -29,9 +53,19 @@ export function getRosaWebAnnotations(canvases, receiveAnnotation) {
         console.log(annoPage);
         // Provide the annotation page to Mirador
         receiveAnnotation(iiifUrl, annoUrl, annoPage);
-      })
-      .catch(error => console.log(error));
+      });
   });
+}
+
+/**
+ * 
+ * @param {string} url target URL for the annotation page
+ * @returns {Promise} with the resulting JSON data pre-parsed
+ */
+function _fetchAnnotationPage(url) {
+  return fetch(url, { method: 'GET' })
+    .then(result => result.json())
+    .catch(error => console.log(error));
 }
 
 /**

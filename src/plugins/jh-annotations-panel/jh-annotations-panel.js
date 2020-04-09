@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import AnnotationSettings from 'mirador/dist/es/src/containers/AnnotationSettings';
-import CanvasAnnotations from 'mirador/dist/es/src/containers/CanvasAnnotations';
 import CompanionWindow from 'mirador/dist/es/src/containers/CompanionWindow';
 import ns from 'mirador/dist/es/src/config/css-ns';
+import AnnotationPage from './components/annotationPage';
 
 /**
  * WindowSideBarAnnotationsPanel ~
@@ -13,9 +13,21 @@ export default class JHAnnotationsPanel extends Component {
    * Returns the rendered component
   */
   render() {
-    const {
-      annotationCount, classes, selectedCanvases, t, windowId, id,
-    } = this.props.targetProps;
+    const { classes, t, windowId, id } = this.props.targetProps;
+    const { annotationCount, selectedCanvases, presentAnnotations, canvasLabels } = this.props;
+    // debugger
+    
+    const pages = presentAnnotations.map((annoPage, index) => {
+      const label = canvasLabels[annoPage.id];
+      return (
+        <AnnotationPage
+          annotationPage={annoPage}
+          canvasLabel={label}
+          classes={classes}
+          key={index}
+        />
+      );
+    });
 
     return (
       <CompanionWindow
@@ -30,7 +42,10 @@ export default class JHAnnotationsPanel extends Component {
           <Typography component="p" variant="subtitle2">{t('showingNumAnnotations', { number: annotationCount })}</Typography>
         </div>
 
-        {selectedCanvases.map((canvas, index) => (
+        <div>
+          {pages}
+        </div>
+        {/*selectedCanvases.map((canvas, index) => (
           <CanvasAnnotations
             canvasId={canvas.id}
             key={canvas.id}
@@ -38,7 +53,7 @@ export default class JHAnnotationsPanel extends Component {
             totalSize={selectedCanvases.length}
             windowId={windowId}
           />
-        ))}
+        ))*/}
       </CompanionWindow>
     );
   }
