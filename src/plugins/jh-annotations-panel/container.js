@@ -50,7 +50,8 @@ function getAnnotationsForVisibleCanvases(state, canvases) {
    * Have this selector strip those out, as they are useless and contain no annotations, leaving us with only the
    * Web Annotation compliant AnnotationPage.
    */
-  return annoPages.filter(page => page.json && !page.json.resources && page.json.items);
+  // return annoPages.filter(page => page.json && !page.json.resources && page.json.items);
+  return annoPages;
 }
 
 /**

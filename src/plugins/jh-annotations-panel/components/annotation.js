@@ -15,7 +15,7 @@ export default class Annotation extends Component {
 
   render() {
     const { annotation } = this.props;
-    // debugger
+
     const bodies = annotation.body.map((body, index) => (
       <AnnotationBody body={body} key={index} />
     ));
