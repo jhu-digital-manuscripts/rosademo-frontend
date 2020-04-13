@@ -5,6 +5,9 @@ import React, { Component } from 'react';
  * depend on the properties of the annotation body, such as type,
  * format, etc
  * 
+ * We could break out different annotation 'purposes' into separate
+ * components if we think it would help.
+ * 
  * props: {
  *    body: { ... }
  *  }
@@ -13,12 +16,30 @@ export default class AnnotationBody extends Component {
   render() {
     const { body } = this.props;
 
-    if (body.type === 'TextualBody') {
-      return <p>{body.value}</p>;
+    let content;
+
+    if (body.purpose === 'tagging') {
+      content = (
+        <div>Tag: {body.value}</div>
+      );
+    } else if (body.purpose === 'commenting') {
+      content = (
+        <div>(comment: {body.value})</div>
+      );
     } else if (body.purpose === 'identifying') {
-      return <p><a href={body.source} target="_blank">{body.source}</a></p>;
+      content = (
+        <div>
+          <a href={body.source} target="_blank">{body.source}</a>
+        </div>
+      );
+    } else {
+
     }
 
-    return <></>;
+    return (
+      <div className="annotation-body">
+        {content}
+      </div>
+    );
   }
 }

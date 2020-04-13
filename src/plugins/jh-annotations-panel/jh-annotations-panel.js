@@ -20,7 +20,7 @@ export default class JHAnnotationsPanel extends Component {
     const annoPages = presentAnnotations.map((annoPage, index) => {
       if (annoPage.json['@type'] === 'sc:AnnotationList') {
         // Ignore old-style annotation lists for now
-        return <></>;
+        return <div className="hidden" key={annoPage.id}></div>;
       }
 
       return (
@@ -28,10 +28,22 @@ export default class JHAnnotationsPanel extends Component {
           annotationPage={annoPage}
           canvasLabel={canvasLabels[annoPage.id]}
           classes={classes}
-          key={index}
+          key={annoPage.id}
         />
       );
     });
+
+    // This sticks around from Mirador's built-in Annotations panel because these components
+    // will basically do nothing if the canvas has no IIIF2 AnnotationList associated with it
+    const miradorAnnos = selectedCanvases.map((canvas, index) => (
+      <CanvasAnnotations
+        canvasId={canvas.id}
+        key={canvas.id}
+        index={index}
+        totalSize={selectedCanvases.length}
+        windowId={windowId}
+      />
+    ));
 
     return (
       <CompanionWindow
@@ -45,19 +57,9 @@ export default class JHAnnotationsPanel extends Component {
           <Typography component="p" variant="subtitle2">{t('showingNumAnnotations', { number: annotationCount })}</Typography>
         </div>
 
-        {
-          // This sticks around from Mirador's built-in Annotations panel because these components
-          // will basically do nothing if the canvas has no IIIF2 AnnotationList associated with it
-          selectedCanvases.map((canvas, index) => (
-            <CanvasAnnotations
-              canvasId={canvas.id}
-              key={canvas.id}
-              index={index}
-              totalSize={selectedCanvases.length}
-              windowId={windowId}
-            />
-          ))
-        }
+        <div>
+          {miradorAnnos}
+        </div>
 
         <div>
           {annoPages}

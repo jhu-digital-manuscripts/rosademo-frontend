@@ -26,7 +26,7 @@ export default class AnnotationPage extends Component {
             annotationPage.json.items.map((anno, index) => (
               <Annotation
                 annotation={anno}
-                key={index}
+                key={anno.id}
               />
             ))
           }
