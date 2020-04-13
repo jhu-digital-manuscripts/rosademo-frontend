@@ -17,7 +17,7 @@ export default class JHAnnotationsPanel extends Component {
     const { classes, t, windowId, id } = this.props.targetProps;
     const { annotationCount, selectedCanvases, presentAnnotations, canvasLabels } = this.props;
 
-    const pages = presentAnnotations.map((annoPage, index) => {
+    const annoPages = presentAnnotations.map((annoPage, index) => {
       if (annoPage.json['@type'] === 'sc:AnnotationList') {
         // Ignore old-style annotation lists for now
         return <></>;
@@ -60,7 +60,7 @@ export default class JHAnnotationsPanel extends Component {
         }
 
         <div>
-          {pages}
+          {annoPages}
         </div>
         
       </CompanionWindow>
