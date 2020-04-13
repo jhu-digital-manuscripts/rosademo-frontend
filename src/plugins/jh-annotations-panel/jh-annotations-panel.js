@@ -4,6 +4,7 @@ import AnnotationSettings from 'mirador/dist/es/src/containers/AnnotationSetting
 import CanvasAnnotations from 'mirador/dist/es/src/containers/CanvasAnnotations';
 import CompanionWindow from 'mirador/dist/es/src/containers/CompanionWindow';
 import ns from 'mirador/dist/es/src/config/css-ns';
+import AnnotationPage from './components/annotationPage';
 
 /**
  * WindowSideBarAnnotationsPanel ~
@@ -13,9 +14,36 @@ export default class JHAnnotationsPanel extends Component {
    * Returns the rendered component
   */
   render() {
-    const {
-      annotationCount, classes, selectedCanvases, t, windowId, id,
-    } = this.props.targetProps;
+    const { classes, t, windowId, id } = this.props.targetProps;
+    const { annotationCount, selectedCanvases, presentAnnotations, canvasLabels } = this.props;
+
+    const annoPages = presentAnnotations.map((annoPage, index) => {
+      if (annoPage.json['@type'] === 'sc:AnnotationList') {
+        // Ignore old-style annotation lists for now
+        return <div className="hidden" key={annoPage.id}></div>;
+      }
+
+      return (
+        <AnnotationPage
+          annotationPage={annoPage}
+          canvasLabel={canvasLabels[annoPage.id]}
+          classes={classes}
+          key={annoPage.id}
+        />
+      );
+    });
+
+    // This sticks around from Mirador's built-in Annotations panel because these components
+    // will basically do nothing if the canvas has no IIIF2 AnnotationList associated with it
+    const miradorAnnos = selectedCanvases.map((canvas, index) => (
+      <CanvasAnnotations
+        canvasId={canvas.id}
+        key={canvas.id}
+        index={index}
+        totalSize={selectedCanvases.length}
+        windowId={windowId}
+      />
+    ));
 
     return (
       <CompanionWindow
@@ -26,19 +54,17 @@ export default class JHAnnotationsPanel extends Component {
         titleControls={<AnnotationSettings windowId={windowId} />}
       >
         <div className={classes.section}>
-          <h1>Custom Annotations Sidebar Panel!</h1>
           <Typography component="p" variant="subtitle2">{t('showingNumAnnotations', { number: annotationCount })}</Typography>
         </div>
 
-        {selectedCanvases.map((canvas, index) => (
-          <CanvasAnnotations
-            canvasId={canvas.id}
-            key={canvas.id}
-            index={index}
-            totalSize={selectedCanvases.length}
-            windowId={windowId}
-          />
-        ))}
+        <div>
+          {miradorAnnos}
+        </div>
+
+        <div>
+          {annoPages}
+        </div>
+        
       </CompanionWindow>
     );
   }

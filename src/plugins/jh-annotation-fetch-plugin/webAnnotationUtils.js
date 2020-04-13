@@ -1,3 +1,62 @@
+export function getUnprocessedRosaWebAnnotations(canvases, receiveAnnotation) {
+  if (!canvases) {
+    return;
+  }
+
+  canvases.forEach((canvas) => {
+    const iiifUrl = canvas.id;
+    let annoUrl = iiifUrl.replace(/\/iiif\/|\/iiif3\//, '/wa/');
+
+    _fetchAnnotationPage(annoUrl)
+      .then((results) => {
+        if (!results) { // Do nothing if there are no results
+          return;
+        }
+
+        if (!Array.isArray(results)) {
+          // TODO: Here we can select our TEI XML fragments to be processed
+          /*
+           * As far as TEI XML processing, XSLT is still probably the simplest solution.
+           * Once the XML string is parsed into a Document, you should be able to apply an XSL
+           * stylesheet to it to transform it into HTML. We should probably then change the
+           * annotation's format to 'text/html'?
+           *
+           * XSLT processing in browser (WARNING: non-standard browser feature, check compatibility tables)
+           *    https://developer.mozilla.org/en-US/docs/Web/API/XSLTProcessor
+           * 
+           * TEI Stylesheets
+           *    https://github.com/TEIC/Stylesheets
+           *    https://github.com/jhellingman/tei2html
+           * 
+           * Otherwise, we can look at using this tool again
+           *    https://github.com/TEIC/CETEIcean
+           * 
+           * Or this random tool
+           *    https://github.com/TEI-Boilerplate/TEI-Boilerplate
+           * 
+           */
+          // if (Array.isArray(results.body) && results.body.some(b => b.format === 'application/xml')) {
+          //   const xmlBody = results.body.find(b => b.format === 'application/xml'); // Assumes only 1 body has XML format
+          //   const xml = xmlBody.value;
+          //   _parseXml(xml);
+          // }
+          results = [ results ];
+        }
+
+        const annoPage = {
+          id: annoUrl,
+          type: 'AnnotationPage',
+          canvas: iiifUrl,
+          items: results
+        };
+
+        console.log(`%cMoo! iiifUrl: ${iiifUrl}, annoUrl: ${annoUrl}`, 'color:blue;');
+        console.log(annoPage);
+        receiveAnnotation(iiifUrl, annoUrl, annoPage);
+      });
+  });
+}
+
 /**
  * Loops through all given canvases, constructs and calls a new URL that points
  * to our Web Annotation endpoint. If there are no annotations for a given canvas,
@@ -15,8 +74,7 @@ export function getRosaWebAnnotations(canvases, receiveAnnotation) {
     const iiifUrl = canvas.id;
     let annoUrl = iiifUrl.replace(/\/iiif\/|\/iiif3\//, '/wa/');
 
-    fetch(annoUrl, { method: 'GET' })
-      .then(res => res.json())
+    _fetchAnnotationPage(annoUrl)
       .then((results) => {
         // Create AnnotationPage
         const annoPage = {
@@ -29,9 +87,19 @@ export function getRosaWebAnnotations(canvases, receiveAnnotation) {
         console.log(annoPage);
         // Provide the annotation page to Mirador
         receiveAnnotation(iiifUrl, annoUrl, annoPage);
-      })
-      .catch(error => console.log(error));
+      });
   });
+}
+
+/**
+ * 
+ * @param {string} url target URL for the annotation page
+ * @returns {Promise} with the resulting JSON data pre-parsed
+ */
+function _fetchAnnotationPage(url) {
+  return fetch(url, { method: 'GET' })
+    .then(result => result.json())
+    .catch(error => console.log(error));
 }
 
 /**
@@ -146,3 +214,16 @@ function _process_georef_targets(targets) {
 //   // TODO: make this URL configurable?
 //   fetch(`${url}/json`);
 // }
+
+
+
+
+
+
+
+
+function _parseXml(xmlString) {
+  const parser = new DOMParser();
+  const result = parser.parseFromString(xmlString, 'application/xml');
+  return result;
+}

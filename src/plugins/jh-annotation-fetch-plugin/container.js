@@ -21,3 +21,6 @@ export function mapStateToProps(state, props) {
 export const mapDispatchToProps = {
   receiveAnnotation
 };
+
+// TODO: need custom reducer to save annotation target data for custom
+// Annotation Panel plugin
