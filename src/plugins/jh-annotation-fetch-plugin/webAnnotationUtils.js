@@ -3,6 +3,11 @@ export function getUnprocessedRosaWebAnnotations(canvases, receiveAnnotation) {
     return;
   }
 
+  // TODO: bad hack to check if canvases are from Homer MS
+  if (canvases.map(canvas => canvas.id).some(id => id.includes('/homer/'))) {
+    _getEldarionAnnotations(canvases, receiveAnnotation);
+  }
+
   canvases.forEach((canvas) => {
     const iiifUrl = canvas.id;
     let annoUrl = iiifUrl.replace(/\/iiif\/|\/iiif3\//, '/wa/');
@@ -89,6 +94,63 @@ export function getRosaWebAnnotations(canvases, receiveAnnotation) {
         receiveAnnotation(iiifUrl, annoUrl, annoPage);
       });
   });
+}
+
+/**
+ * Inteded to be used in development only.
+ * 
+ * @param {array} canvases - array of Canvas objects
+ * @param {function} receiveAnnotation - callback function to stuff the fetched annotations into
+ */
+export function _getEldarionAnnotations(canvases, receiveAnnotation) {
+  if (!canvases) {
+    return;
+  }
+
+  let canvasId;
+  if (Array.isArray(canvases)) {
+    canvasId = canvases[1].id;
+  } else {
+    canvasId = canvases.id;
+  }
+  // https://aniop-atlas-staging.eldarion.com/wa/urn:cite2:hmt:msA.v1:12r/translation-alignment/collection/text/
+  // TODO: Need to make this dynamic. To do that, each Canvas must have a link to the Eldarion annotation collection
+  // For now, we'll have this static fetch for testing
+  const url = 'https://aniop-atlas-staging.eldarion.com/wa/urn:cite2:hmt:msA.v1:12r/translation-alignment/collection/text/';
+  const annoCol = fetch(url, { method: 'GET' })
+    .then(result => result.json())
+    .then((data) => {
+      console.log(`%cEldarion annotation collection: ${url}`, 'color: orange;');
+      console.log(data);
+      handleAnnotationCollection(data, canvasId, receiveAnnotation);
+    });
+}
+
+/**
+ * Process an AnnotationCollection so Mirador knows how to handle it.
+ * Basically iterate through the collection to retrieve the AnnotationPages and shove them
+ * into Mirador's application state
+ * 
+ * @param {object} collection JSON object representing an AnnotationCollection
+ * @param {string} parentUri which Canvas does this come from
+ * @param {function} receiveAnnotation callback function to stuff the fetched annotations into
+ */
+async function handleAnnotationCollection(collection, parentUri, receiveAnnotation) {
+  // Do we need to keep any info from the AnnotationCollection itself?
+  // const label = collection.label;
+
+  let nextPage = collection.first;
+  do {
+    // For each annotation page URL, resolve it, send it to the Redux store and return the
+    // URL of the next page, or 'undefined' if it does not exist
+    nextPage = await _fetchAnnotationPage(nextPage)
+      .then((data) => {
+        console.log(`%cEldanrion annotation page: ${data.id}`, 'color: purple;');
+        console.log(data);
+        receiveAnnotation(parentUri, nextPage, data);
+        return data.next;
+      });
+  } while (nextPage);
 }
 
 /**

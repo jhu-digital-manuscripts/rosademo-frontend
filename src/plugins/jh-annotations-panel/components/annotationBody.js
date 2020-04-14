@@ -32,8 +32,12 @@ export default class AnnotationBody extends Component {
           <a href={body.source} target="_blank">{body.source}</a>
         </div>
       );
-    } else {
-
+    } else if (body.type === 'TextualBody') {
+      if (body.language === 'en') {
+        content = (<div className="translation">{body.value}</div>);
+      } else if (body.language) {
+        content = (<div className="transcription">{body.value}</div>);
+      }
     }
 
     return (
