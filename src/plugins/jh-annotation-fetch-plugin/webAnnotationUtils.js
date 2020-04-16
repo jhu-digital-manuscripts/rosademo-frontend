@@ -107,23 +107,31 @@ export function _getEldarionAnnotations(canvases, receiveAnnotation) {
     return;
   }
 
-  let canvasId;
-  if (Array.isArray(canvases)) {
-    canvasId = canvases[1].id;
-  } else {
-    canvasId = canvases.id;
+  if (!Array.isArray(canvases)) {
+    canvases = [ canvases ];
   }
-  // https://aniop-atlas-staging.eldarion.com/wa/urn:cite2:hmt:msA.v1:12r/translation-alignment/collection/text/
-  // TODO: Need to make this dynamic. To do that, each Canvas must have a link to the Eldarion annotation collection
-  // For now, we'll have this static fetch for testing
-  const url = 'https://aniop-atlas-staging.eldarion.com/wa/urn:cite2:hmt:msA.v1:12r/translation-alignment/collection/text/';
-  const annoCol = fetch(url, { method: 'GET' })
-    .then(result => result.json())
-    .then((data) => {
-      console.log(`%cEldarion annotation collection: ${url}`, 'color: orange;');
-      console.log(data);
-      handleAnnotationCollection(data, canvasId, receiveAnnotation);
-    });
+
+  canvases.forEach((canvas) => {
+    const canvasId = canvas.id;
+    const label = canvas.__jsonld.label;
+
+    const url = deriveCtsEndpoint(label, 'translation-alignment');
+    if (!url) {
+      return;
+    }
+
+    fetch(url, { method: 'GET' })
+      .then(result => result.json())
+      .then((data) => {
+        console.log(`%cEldarion annotation collection: ${url}`, 'color: orange;');
+        console.log(data);
+        handleAnnotationCollection(data, canvasId, receiveAnnotation);
+      })
+      .catch((error) => {
+        console.log('%cError fetching Homer translation annotations', 'color: red;');
+        console.log(error);
+      });
+  });
 }
 
 /**
@@ -267,25 +275,33 @@ function _process_georef_targets(targets) {
   return target;
 }
 
+// TODO: Eldarion endpoints must be configurable!
 /**
- * Use the provided Pleiades ID to get GeoJSON from the Pleiades API
  * 
- * @param {string} url 
+ * @param {object} canvas a canvas JSON data
+ * @param {string} endpoint should take value (translation-alignment|named-entities)
  */
-// function _pleiades2json(url) {
-//   // TODO: make this URL configurable?
-//   fetch(`${url}/json`);
-// }
+export function deriveCtsEndpoint(label, endpoint) {
+  if (!label) {
+    console.log('%cCan\'t derive CTS URN from Canvas. Couldn\'t find a label.', 'color: red;');
+    return;
+  }
 
+  // This relies on a canvas label structured like: 'folio 3r'
+  // This means that any front matter or misc pages will not work
+  if (label.includes('cover') || label.includes('matter') || label.includes('misc')) {
+    console.log(`%cRefused to try to derive CTS URN for canvas: ${label}`, 'color: red;');
+    return;
+  }
 
+  const truncatedLabel = label.slice(label.lastIndexOf(' ') + 1);
 
-
-
-
-
-
-function _parseXml(xmlString) {
-  const parser = new DOMParser();
-  const result = parser.parseFromString(xmlString, 'application/xml');
-  return result;
+  switch(endpoint) {
+    case 'translation-alignment':
+      return `https://aniop-atlas-staging.eldarion.com/wa/urn:cite2:hmt:msA.v1:${truncatedLabel}/translation-alignment/collection/text/`;
+    case 'named-entities':
+      return `https://explorehomer-feature-na-4qbljt.herokuapp.com/wa/urn:cite2:hmt:msA.v1:${truncatedLabel}/named-entities/collection/compound/`;
+    default:
+      return;
+  }
 }

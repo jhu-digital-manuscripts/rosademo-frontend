@@ -30,6 +30,11 @@ export default class JHAnnotationsPanel extends Component {
     const { annotationCount, selectedCanvases, presentAnnotations, canvasLabels } = this.props;
 
     const annoPages = presentAnnotations.map((annoPage, index) => {
+      // debugger
+      if (!annoPage || !annoPage.json) {
+        return;
+      }
+
       if (annoPage.json['@type'] === 'sc:AnnotationList') {
         // Ignore old-style annotation lists for now
         return <div className="hidden" key={annoPage.id}></div>;

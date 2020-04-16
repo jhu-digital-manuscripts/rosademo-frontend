@@ -62,6 +62,7 @@ export function getAnnotationsForVisibleCanvases(state, canvases) {
  *  }
  */
 export function mapAnnotationPageToCanvasLabel(state, canvases, presentAnnotations) {
+  return {};
   const { annotations } = state;
 
   if (!canvases || !(Array.isArray(canvases) && canvases.length > 0)) {
