@@ -1,3 +1,7 @@
+.annotation-page {
+  margin: 0 12px;
+}
+
 .annotation {
   border-bottom: 2px solid lightgrey;
   padding: 8px;
