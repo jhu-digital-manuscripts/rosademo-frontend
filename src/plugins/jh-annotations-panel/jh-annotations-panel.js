@@ -5,6 +5,18 @@ import CanvasAnnotations from 'mirador/dist/es/src/containers/CanvasAnnotations'
 import CompanionWindow from 'mirador/dist/es/src/containers/CompanionWindow';
 import ns from 'mirador/dist/es/src/config/css-ns';
 import AnnotationPage from './components/annotationPage';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
+import { CssBaseline } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
+
+const panelTheme = createMuiTheme({
+  typography: {
+    fontFamily: [
+      'Roboto',
+    ],
+  },
+});
 
 /**
  * WindowSideBarAnnotationsPanel ~
@@ -46,7 +58,9 @@ export default class JHAnnotationsPanel extends Component {
     ));
 
     return (
-      <CompanionWindow
+      <ThemeProvider>
+        <CssBaseline>
+          {<CompanionWindow
         title={t('annotations')}
         paperClassName={ns('window-sidebar-annotation-panel')}
         windowId={windowId}
@@ -61,11 +75,15 @@ export default class JHAnnotationsPanel extends Component {
           {miradorAnnos}
         </div>
 
-        <div>
-          {annoPages}
-        </div>
+        <Box pl="8px" pr="8px">
+          <div>
+            {annoPages}
+          </div>
+        </Box>
         
-      </CompanionWindow>
+      </CompanionWindow>}
+        </CssBaseline>
+      </ThemeProvider>
     );
   }
 }
