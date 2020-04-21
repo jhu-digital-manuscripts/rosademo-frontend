@@ -7,4 +7,3 @@ npm-debug.log*
 yarn-error.log
 .yarn/
 .yarnrc.yml
-package-lock.json
