@@ -43,12 +43,6 @@ export function getAnnotationsForVisibleCanvases(state, canvases) {
     canvases.map(canvas => Object.values(annotations[canvas.id]))
   );
 
-  /*
-   * Not quite done pre-processing. For OUR Canvases, for some reason, there is a IIIF 2 AnnotationList already attached.
-   * Have this selector strip those out, as they are useless and contain no annotations, leaving us with only the
-   * Web Annotation compliant AnnotationPage.
-   */
-  // return annoPages.filter(page => page.json && !page.json.resources && page.json.items);
   return annoPages;
 }
 
@@ -62,9 +56,8 @@ export function getAnnotationsForVisibleCanvases(state, canvases) {
  *  }
  */
 export function mapAnnotationPageToCanvasLabel(state, canvases, presentAnnotations) {
-  return {};
   const { annotations } = state;
-
+  
   if (!canvases || !(Array.isArray(canvases) && canvases.length > 0)) {
     return {};
   }
@@ -72,10 +65,15 @@ export function mapAnnotationPageToCanvasLabel(state, canvases, presentAnnotatio
   let result = {};
   
   const currentCanvasIds = canvases.map(canvas => canvas.id);
-  // TODO: good lord the structure of the application state is confusing as hell
+  // TODO: the structure of the application state is confusing as hell
 
   presentAnnotations.forEach((annoPage) => {
+    if (annoPage.isFetching) {
+      return;
+    }
+
     let match;
+
     if (annoPage.json.canvas) {
       match = annoPage.json.canvas;
     } else {
@@ -87,7 +85,7 @@ export function mapAnnotationPageToCanvasLabel(state, canvases, presentAnnotatio
     // TODO: Canvas.getLabel() is a function, but it returns an I18N label (which is actually a good thing)
     // BUT to simplify things, for now I will directly get the label as a string
     const matchingCanvas = canvases.find(canvas => canvas.id === match);
-    // debugger
+
     if (matchingCanvas && matchingCanvas.__jsonld) {
       Object.assign(result, {
         [annoPage.id]: matchingCanvas.__jsonld.label
@@ -96,4 +94,69 @@ export function mapAnnotationPageToCanvasLabel(state, canvases, presentAnnotatio
   });
 
   return result;
+}
+
+/**
+ * 
+ * @param {object} state application state
+ * @param {array} annotationPages list of annotation pages present on visible canvases
+ * @returns {object} a mapping of annotation IDs to a list of annotation IDs that may target it
+ */
+export function mapAnnoOfAnno(state, annotationPages) {
+  if (!state || !state.annotationsMapReducer) {
+    return {};
+  }
+  const annotationMap = state.annotationsMapReducer.annotationMap;
+
+  if (!annotationMap || !Array.isArray(annotationPages)) {
+    return {};
+  }
+
+  let result = {};
+
+  annotationPages.forEach((ap) => {
+    if (ap.isFetching) {
+      return;
+    }
+    const { items } = ap.json;
+
+    if (!Array.isArray(items)) {
+      return;
+    }
+
+    /**
+     * For each annotation (this annotation)
+     *    Check closest annotations
+     *    If an annotation's "targetText" is found in this annotation
+     */
+    items.forEach((anno) => {
+      const { id, body } = anno;
+
+      const bodyAsText = _body2text(body);
+      const targetCanvas = (id in annotationMap) ? annotationMap[id].targetCanvas : false;
+
+      Object.assign(result, {
+        [id]: Object.values(annotationMap)
+          .filter(testAnno => targetCanvas === testAnno.targetCanvas && id !== testAnno.id && bodyAsText.includes(testAnno.targetText))
+      });
+    });
+  });
+
+  return result;
+}
+
+function _body2text(annotationBody) {
+  if (Array.isArray(annotationBody)) {
+    return annotationBody
+      .map(b => _body2text(b))
+      .join(' ');
+  }
+
+  if (typeof annotationBody === 'string') {
+    return annotationBody;
+  } else if (typeof annotationBody === 'object' && annotationBody.type === 'TextualBody') {
+    return annotationBody.value;
+  }
+
+  return '';
 }

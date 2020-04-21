@@ -55,8 +55,8 @@ export function getUnprocessedRosaWebAnnotations(canvases, receiveAnnotation) {
           items: results
         };
 
-        console.log(`%cMoo! iiifUrl: ${iiifUrl}, annoUrl: ${annoUrl}`, 'color:blue;');
-        console.log(annoPage);
+        // console.log(`%cMoo! iiifUrl: ${iiifUrl}, annoUrl: ${annoUrl}`, 'color:blue;');
+        // console.log(annoPage);
         receiveAnnotation(iiifUrl, annoUrl, annoPage);
       });
   });
@@ -88,8 +88,8 @@ export function getRosaWebAnnotations(canvases, receiveAnnotation) {
           items: _process_annotations(results)
         };
 
-        console.log(`%cMoo! iiifUrl: ${iiifUrl}, annoUrl: ${annoUrl}`, 'color:green;');
-        console.log(annoPage);
+        // console.log(`%cMoo! iiifUrl: ${iiifUrl}, annoUrl: ${annoUrl}`, 'color:green;');
+        // console.log(annoPage);
         // Provide the annotation page to Mirador
         receiveAnnotation(iiifUrl, annoUrl, annoPage);
       });
@@ -123,8 +123,8 @@ export function _getEldarionAnnotations(canvases, receiveAnnotation) {
     fetch(url, { method: 'GET' })
       .then(result => result.json())
       .then((data) => {
-        console.log(`%cEldarion annotation collection: ${url}`, 'color: orange;');
-        console.log(data);
+        // console.log(`%cEldarion annotation collection: ${url}`, 'color: orange;');
+        // console.log(data);
         handleAnnotationCollection(data, canvasId, receiveAnnotation);
       })
       .catch((error) => {
@@ -153,8 +153,8 @@ async function handleAnnotationCollection(collection, parentUri, receiveAnnotati
     // URL of the next page, or 'undefined' if it does not exist
     nextPage = await _fetchAnnotationPage(nextPage)
       .then((data) => {
-        console.log(`%cEldanrion annotation page: ${data.id}`, 'color: purple;');
-        console.log(data);
+        // console.log(`%cEldanrion annotation page: ${data.id}`, 'color: purple;');
+        // console.log(data);
         receiveAnnotation(parentUri, nextPage, data);
         return data.next;
       });

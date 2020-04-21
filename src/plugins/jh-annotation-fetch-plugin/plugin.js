@@ -1,6 +1,6 @@
 import JHAnnotationFetcher from './JHAnnotationFetcher';
 import { mapStateToProps, mapDispatchToProps } from './container';
-import { relatedAnnotationsReducer } from './reducers';
+import { annotationsMapReducer } from './reducers';
 
 export default {
   name: 'JHAnnotationFetchPlugin',
@@ -10,6 +10,6 @@ export default {
   mapStateToProps,
   mapDispatchToProps,
   reducers: {
-    relatedAnnotationsReducer
+    annotationsMapReducer
   }
 };

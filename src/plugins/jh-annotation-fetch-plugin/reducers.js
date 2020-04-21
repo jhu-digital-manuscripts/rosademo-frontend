@@ -14,7 +14,7 @@ import ActionTypes from 'mirador/dist/es/src/state/actions/action-types';
  * @param {object} state Mirador application/redux state
  * @param {object} action Mirador action
  */
-export const relatedAnnotationsReducer = (state = {}, action) => {
+export const annotationsMapReducer = (state = {}, action) => {
   /**
    * action: {
    *    annotationId: '',
@@ -72,51 +72,48 @@ function handleAnnotationPage(annotationPage, annotationMap) {
  * 
  *  {
  *    json: { ... }, // annotation JSON data
- *    targetAnnotations: [], // ID of any IIIF annotations this annotation may target
- *    targetCanvas: ''  // ID of target IIIF Canvas
+ *    targetCanvas: '',  // ID of target IIIF Canvas
+ *    targetText: '', // The actual text this annotation should select
  *  }
  * 
  * Impl note:
  * For this iteration, we will pick out any IIIF Canvas this annotation targets.
- * We will also check to see if the annotation targets a CTS URN, if so, inspect
- * the annotation list for a match.
+ * We will also check to see if the annotation targets a CTS URN.
+ * We can use these pieces of information to create a selector that should be able
+ * to query the annotation map for related annotations
  * 
  * @param {object} annotation 
  * @param {object} annoMap annotation map, pulled from application state
  */
 function processAnnotation(annotation, annoMap) {
-  const { body, target } = annotation;
-  const { targetAnnotations, targetCanvas } = findTargets(annotation, annoMap, true);
+  const { targetCanvas, targetText } = findTargets(annotation);
 
   return {
     json: annotation,
     targetCanvas,
-    targetAnnotations,
-    targets
+    targetText
   }
 }
 
-function findTargets(annotation, annoMap, checkAnnotations) {
+function findTargets(annotation) {
+  const { target } = annotation;
+
   let targetCanvas;
-  let targetAnnotations;
+  let targetText;
 
   if (Array.isArray(target)) {
     targetCanvas = target.find(t => t.type === 'SpecificResource' && t.source.type === 'Canvas')
 
+    if (targetCanvas) {
+      targetCanvas = targetCanvas.source.id;
+
+      // TODO: nasty custom normalization
+      targetCanvas = targetCanvas.replace(/iiif3/, 'iiif');
+    }
+
     const cts = target.find(t => (typeof t === 'string') && t.startsWith('urn:cts'));
-    if (checkAnnotations && cts && cts.includes('@')) {
-      const word = cts.slice(cts.lastIndexOf('@') + 1);
-
-      targetAnnotations.push(
-        Object.values(annoMap).map(anno => anno.json)
-          .filter((anno) => {
-            const targets = findTargets(anno);
-            const annoText = anno2text(anno);
-
-            return targetCanvas.includes(targets.targetCanvas) && annoText.includes(word);
-          }
-        )
-      );
+    if (cts && cts.includes('@')) {
+      targetText = cts.slice(cts.lastIndexOf('@') + 1);;
     }
   } else if (typeof target === 'object') {
     if (target.type === 'SpecificResource' && target.source.type === 'Canvas') {
@@ -126,49 +123,8 @@ function findTargets(annotation, annoMap, checkAnnotations) {
 
   return {
     targetCanvas,
-    targetAnnotations
+    targetText
   }
 }
 
-function anno2text(annotation) {
-  const { body } = annotation;
-
-  if (!Array.isArray(annotation)) {
-    return anno2text([body]);
-  }
-
-  return body.filter(b => b.type === 'TextualBody')
-    .map(b => b.value)
-    .join(' ');
-}
-
-
-
-
-
-
-/**
- * Does the given annotation target another annotation as opposed to a canvas?
- * If so, return the target annotation ID
- * 
- * @param {object} annotation annotation JSON
- * @returns {string} the ID of the targeted annotation
- */
-function annoTargetsAnno(annotation) {
-  const { target } = annotation;
-  return Array.isArray(target) ? target.some(t => _isAnnoTarget(t)) : _isAnnoTarget(target);
-}
-
-/**
- * Does this annotation target represent an annotation?
- * 
- * @param target an annotation target. Can be string or object
- */
-function _isAnnoTarget(target) {
-  if (typeof target === 'string') {
-    return target.startsWith('urn:cts');
-  }
-
-  return false;
-}
 

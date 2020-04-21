@@ -11,3 +11,9 @@
 .translation {
   margin-left: 12px;
 }
+
+.targeted-annotations-container {
+  border-left: 2px solid lightblue;
+  margin-left: 12px;
+  padding-left: 12px;
+}

@@ -63,13 +63,33 @@ export default class Annotation extends Component {
   }
 
   render() {
-    const { annotation } = this.props;
+    const {
+      annotation,
+      targetedBy
+    } = this.props;
+
     // The annotation has content if 'annotation.body' is an array with 1 or more elements,
     // or is not an array and exists
     const hasContent = Array.isArray(annotation.body) ? annotation.body.length > 0 : !!annotation.body;
     // If no content is detected, return early
     if (!hasContent) {
       return <></>;
+    }
+
+    let targetedAnnotations;
+    const isTargeted = Array.isArray(targetedBy) && targetedBy.length > 0;
+    if (isTargeted) {
+      targetedAnnotations = (
+        <div className="targeted-annotations-container">
+          {
+            targetedBy.map(anno => (
+              <Annotation annotation={anno.json} key={anno.json.id} />
+            ))
+          }
+        </div>
+      )
+    } else {
+      targetedAnnotations = <></>;
     }
 
     return (
@@ -79,6 +99,7 @@ export default class Annotation extends Component {
           {this._bodies(annotation)}
         </div>
         {this._creator(annotation)}
+        {targetedAnnotations}
       </div>
     );
   }

@@ -27,10 +27,18 @@ export default class JHAnnotationsPanel extends Component {
   */
   render() {
     const { classes, t, windowId, id } = this.props.targetProps;
-    const { annotationCount, selectedCanvases, presentAnnotations, canvasLabels } = this.props;
 
-    const annoPages = presentAnnotations.map((annoPage, index) => {
-      // debugger
+    const theme = panelTheme;
+
+    const {
+      annotationCount,
+      selectedCanvases,
+      presentAnnotations,
+      canvasLabels,
+      annoOfAnno
+    } = this.props;
+
+    const annoPages = presentAnnotations.map((annoPage) => {
       if (!annoPage || !annoPage.json) {
         return;
       }
@@ -45,6 +53,7 @@ export default class JHAnnotationsPanel extends Component {
           annotationPage={annoPage}
           canvasLabel={canvasLabels[annoPage.id]}
           classes={classes}
+          annotationMap={annoOfAnno}
           key={annoPage.id}
         />
       );

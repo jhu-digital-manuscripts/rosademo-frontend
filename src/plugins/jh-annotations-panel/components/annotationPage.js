@@ -9,12 +9,27 @@ import Box from '@material-ui/core/Box';
  * 
  * props: {
  *    canvasLabel: '',
- *    annotationPage: { ... } 
+ *    annotationPage: { ... },
+ *    annotationMap: {} // Map annotation IDs to annotations that may target them
  *  }
  */
 export default class AnnotationPage extends Component {
   render() {
-    const { annotationPage, canvasLabel, classes } = this.props;
+    const {
+      annotationMap,
+      annotationPage,
+      canvasLabel,
+      classes
+    } = this.props;
+
+    const annotationElements = annotationPage.json.items.map((anno) => {
+      const { id } = anno;
+      const targetedBy = annotationMap[id];
+
+      return (
+        <Annotation annotation={anno} targetedBy={targetedBy} key={id} />
+      );
+    });
 
     return (
       <>
@@ -25,14 +40,7 @@ export default class AnnotationPage extends Component {
         </Box>
 
         <div>
-          {
-            annotationPage.json.items.map((anno, index) => (
-              <Annotation
-                annotation={anno}
-                key={anno.id}
-              />
-            ))
-          }
+          {annotationElements}
         </div>
       </>
     );
