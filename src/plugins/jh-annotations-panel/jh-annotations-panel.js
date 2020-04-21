@@ -61,27 +61,27 @@ export default class JHAnnotationsPanel extends Component {
       <ThemeProvider>
         <CssBaseline>
           {<CompanionWindow
-        title={t('annotations')}
-        paperClassName={ns('window-sidebar-annotation-panel')}
-        windowId={windowId}
-        id={id}
-        titleControls={<AnnotationSettings windowId={windowId} />}
-      >
-        <div className={classes.section}>
-          <Typography component="p" variant="subtitle2">{t('showingNumAnnotations', { number: annotationCount })}</Typography>
-        </div>
+            title={t('annotations')}
+            paperClassName={ns('window-sidebar-annotation-panel')}
+            windowId={windowId}
+            id={id}
+            titleControls={<AnnotationSettings windowId={windowId} />}
+          >
+            <div className={classes.section}>
+              <Typography component="p" variant="subtitle2">{t('showingNumAnnotations', { number: annotationCount })}</Typography>
+            </div>
 
-        <div>
-          {miradorAnnos}
-        </div>
+            <div>
+              {miradorAnnos}
+            </div>
 
-        <Box pl="8px" pr="8px">
-          <div>
-            {annoPages}
-          </div>
-        </Box>
-        
-      </CompanionWindow>}
+            <Box pl="8px" pr="8px">
+              <div>
+                {annoPages}
+              </div>
+            </Box>
+
+          </CompanionWindow>}
         </CssBaseline>
       </ThemeProvider>
     );
