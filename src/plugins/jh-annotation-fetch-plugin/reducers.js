@@ -26,6 +26,10 @@ export const annotationsMapReducer = (state = {}, action) => {
     const { annotationJson } = action;
     const { annotationMap } = state;
 
+    if (!annotationJson) {
+      return state;
+    }
+
     let result = handleAnnotationPage(annotationJson, annotationMap);
     result = Object.assign((annotationMap || {}), result);
 

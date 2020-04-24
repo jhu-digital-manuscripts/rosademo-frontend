@@ -155,8 +155,15 @@ async function handleAnnotationCollection(collection, parentUri, receiveAnnotati
       .then((data) => {
         // console.log(`%cEldanrion annotation page: ${data.id}`, 'color: purple;');
         // console.log(data);
-        receiveAnnotation(parentUri, nextPage, data);
-        return data.next;
+        if (data) {
+          receiveAnnotation(parentUri, nextPage, data);
+          return data.next;
+        } else {
+          return false;
+        }
+      })
+      .catch(() => {
+        nextPage = false;
       });
   } while (nextPage);
 }

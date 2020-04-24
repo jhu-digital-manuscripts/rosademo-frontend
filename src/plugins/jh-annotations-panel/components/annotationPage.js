@@ -14,6 +14,17 @@ import Box from '@material-ui/core/Box';
  *  }
  */
 export default class AnnotationPage extends Component {
+
+  _targetsAnnotation(target) {
+    if (!Array.isArray(target)) {
+      return this._targetsAnnotation([target]);
+    }
+
+    return target.some(t => (
+      typeof t === 'string' && t.startsWith('urn:cts') && t.includes('@')
+    ));
+  }
+
   render() {
     const {
       annotationMap,
@@ -22,14 +33,20 @@ export default class AnnotationPage extends Component {
       classes
     } = this.props;
 
-    const annotationElements = annotationPage.json.items.map((anno) => {
-      const { id } = anno;
-      const targetedBy = annotationMap[id];
+    const annotationElements = annotationPage.json.items
+      .filter((anno) => !this._targetsAnnotation(anno.target))
+      .map((anno) => {
+        const { id } = anno;
+        const targetedBy = annotationMap[id];
 
-      return (
-        <Annotation annotation={anno} targetedBy={targetedBy} key={id} />
-      );
-    });
+        return (
+          <Annotation annotation={anno} targetedBy={targetedBy} key={id} />
+        );
+      });
+
+    if (annotationElements.length === 0) {
+      return <></>;
+    }
 
     return (
       <>
