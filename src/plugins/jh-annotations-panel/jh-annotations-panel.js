@@ -5,37 +5,28 @@ import CanvasAnnotations from 'mirador/dist/es/src/containers/CanvasAnnotations'
 import CompanionWindow from 'mirador/dist/es/src/containers/CompanionWindow';
 import ns from 'mirador/dist/es/src/config/css-ns';
 import AnnotationPage from './components/annotationPage';
-import { createMuiTheme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/core/styles';
 import { CssBaseline } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
+import 'typeface-roboto';
 
-const panelTheme = createMuiTheme({
-  typography: {
-    fontFamily: [
-      'Roboto',
-    ],
-  },
-});
+require('typeface-roboto');
 
 /**
  * WindowSideBarAnnotationsPanel ~
-*/
+ */
 export default class JHAnnotationsPanel extends Component {
   /**
    * Returns the rendered component
-  */
+   */
   render() {
     const { classes, t, windowId, id } = this.props.targetProps;
-
-    const theme = panelTheme;
 
     const {
       annotationCount,
       selectedCanvases,
       presentAnnotations,
       canvasLabels,
-      annoOfAnno
+      annoOfAnno,
     } = this.props;
 
     const annoPages = presentAnnotations.map((annoPage) => {
@@ -45,7 +36,7 @@ export default class JHAnnotationsPanel extends Component {
 
       if (annoPage.json['@type'] === 'sc:AnnotationList') {
         // Ignore old-style annotation lists for now
-        return <div className="hidden" key={annoPage.id}></div>;
+        return <div className='hidden' key={annoPage.id}></div>;
       }
 
       return (
@@ -72,9 +63,9 @@ export default class JHAnnotationsPanel extends Component {
     ));
 
     return (
-      <ThemeProvider>
-        <CssBaseline>
-          {<CompanionWindow
+      <CssBaseline>
+        {
+          <CompanionWindow
             title={t('annotations')}
             paperClassName={ns('window-sidebar-annotation-panel')}
             windowId={windowId}
@@ -82,23 +73,19 @@ export default class JHAnnotationsPanel extends Component {
             titleControls={<AnnotationSettings windowId={windowId} />}
           >
             <div className={classes.section}>
-              <Typography component="p" variant="subtitle2">{t('showingNumAnnotations', { number: annotationCount })}</Typography>
+              <Typography component='p' variant='subtitle2'>
+                {t('showingNumAnnotations', { number: annotationCount })}
+              </Typography>
             </div>
 
-            <div>
-              {miradorAnnos}
-            </div>
+            <div>{miradorAnnos}</div>
 
-            <Box pl="8px" pr="8px">
-              <div>
-                {annoPages}
-              </div>
+            <Box pl='8px' pr='8px'>
+              <div>{annoPages}</div>
             </Box>
-
-          </CompanionWindow>}
-        </CssBaseline>
-      </ThemeProvider>
+          </CompanionWindow>
+        }
+      </CssBaseline>
     );
   }
 }
-

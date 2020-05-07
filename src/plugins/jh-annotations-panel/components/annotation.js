@@ -3,7 +3,7 @@ import AnnotationBody from './annotationBody';
 
 /**
  * Should display an annotation, possibly decorated by other annotations
- * 
+ *
  * props: {
  *    annotation: { ... }, // The subject of this component
  *    targetedBy: [
@@ -12,17 +12,12 @@ import AnnotationBody from './annotationBody';
  *  }
  */
 export default class Annotation extends Component {
-
   _label(annotation) {
     if (annotation.label) {
-      return (
-        <div className="annotation-label">
-          Label: {annotation.label}
-        </div>
-      );
+      return <div className='annotation-label'>{annotation.label}</div>;
     }
 
-    return (<></>);
+    return <></>;
   }
 
   _creator(annotation) {
@@ -30,19 +25,22 @@ export default class Annotation extends Component {
     if (annotation.creator) {
       if (typeof annotation.creator === 'string') {
         creator = (
-          <div className="annotation-creator">
-            <span>Creator: </span><a href={annotation.creator} target="_blank">{annotation.creator}</a>
-          </div>
+          <>
+            <span style={{ fontStyle: 'italic' }}>Creator: </span>
+            <a href={annotation.creator} target='_blank'>
+              {annotation.creator}
+            </a>
+          </>
         );
       } else if (typeof annotation.creator === 'object') {
         creator = (
-          <div className="annotation-creator">
-            <a href={annotation.creator.id} target="_blank">{annotation.creator.name}</a>
-          </div>
+          <a href={annotation.creator.id} target='_blank'>
+            {annotation.creator.name}
+          </a>
         );
       }
     } else {
-      creator = (<></>);
+      creator = <></>;
     }
 
     return creator;
@@ -58,19 +56,18 @@ export default class Annotation extends Component {
           className = 'transcription';
         }
       }
-      return (<AnnotationBody className={className} body={body} key={index} />);
+      return <AnnotationBody className={className} body={body} key={index} />;
     });
   }
 
   render() {
-    const {
-      annotation,
-      targetedBy
-    } = this.props;
+    const { annotation, targetedBy } = this.props;
 
     // The annotation has content if 'annotation.body' is an array with 1 or more elements,
     // or is not an array and exists
-    const hasContent = Array.isArray(annotation.body) ? annotation.body.length > 0 : !!annotation.body;
+    const hasContent = Array.isArray(annotation.body)
+      ? annotation.body.length > 0
+      : !!annotation.body;
     // If no content is detected, return early
     if (!hasContent) {
       return <></>;
@@ -80,24 +77,20 @@ export default class Annotation extends Component {
     const isTargeted = Array.isArray(targetedBy) && targetedBy.length > 0;
     if (isTargeted) {
       targetedAnnotations = (
-        <div className="targeted-annotations-container">
-          {
-            targetedBy.map(anno => (
-              <Annotation annotation={anno.json} key={anno.json.id} />
-            ))
-          }
+        <div className='targeted-annotations-container'>
+          {targetedBy.map((anno) => (
+            <Annotation annotation={anno.json} key={anno.json.id} />
+          ))}
         </div>
-      )
+      );
     } else {
       targetedAnnotations = <></>;
     }
 
     return (
-      <div className="annotation">
+      <div className='annotation'>
         {this._label(annotation)}
-        <div className="annotation-bodies">
-          {this._bodies(annotation)}
-        </div>
+        <div className='annotation-bodies'>{this._bodies(annotation)}</div>
         {this._creator(annotation)}
         {targetedAnnotations}
       </div>
