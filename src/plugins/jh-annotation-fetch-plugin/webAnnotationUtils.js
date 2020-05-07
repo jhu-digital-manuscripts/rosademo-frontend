@@ -3,6 +3,11 @@ export function getUnprocessedRosaWebAnnotations(canvases, receiveAnnotation) {
     return;
   }
 
+  // TODO: bad hack to check if canvases are from Homer MS
+  if (canvases.map(canvas => canvas.id).some(id => id.includes('/homer/'))) {
+    _getEldarionAnnotations(canvases, receiveAnnotation);
+  }
+
   canvases.forEach((canvas) => {
     const iiifUrl = canvas.id;
     let annoUrl = iiifUrl.replace(/\/iiif\/|\/iiif3\//, '/wa/');
@@ -50,8 +55,8 @@ export function getUnprocessedRosaWebAnnotations(canvases, receiveAnnotation) {
           items: results
         };
 
-        console.log(`%cMoo! iiifUrl: ${iiifUrl}, annoUrl: ${annoUrl}`, 'color:blue;');
-        console.log(annoPage);
+        // console.log(`%cMoo! iiifUrl: ${iiifUrl}, annoUrl: ${annoUrl}`, 'color:blue;');
+        // console.log(annoPage);
         receiveAnnotation(iiifUrl, annoUrl, annoPage);
       });
   });
@@ -83,12 +88,84 @@ export function getRosaWebAnnotations(canvases, receiveAnnotation) {
           items: _process_annotations(results)
         };
 
-        console.log(`%cMoo! iiifUrl: ${iiifUrl}, annoUrl: ${annoUrl}`, 'color:green;');
-        console.log(annoPage);
+        // console.log(`%cMoo! iiifUrl: ${iiifUrl}, annoUrl: ${annoUrl}`, 'color:green;');
+        // console.log(annoPage);
         // Provide the annotation page to Mirador
         receiveAnnotation(iiifUrl, annoUrl, annoPage);
       });
   });
+}
+
+/**
+ * Inteded to be used in development only.
+ * 
+ * @param {array} canvases - array of Canvas objects
+ * @param {function} receiveAnnotation - callback function to stuff the fetched annotations into
+ */
+export function _getEldarionAnnotations(canvases, receiveAnnotation) {
+  if (!canvases) {
+    return;
+  }
+
+  if (!Array.isArray(canvases)) {
+    canvases = [ canvases ];
+  }
+
+  canvases.forEach((canvas) => {
+    const canvasId = canvas.id;
+    const label = canvas.__jsonld.label;
+
+    const url = deriveCtsEndpoint(label, 'translation-alignment');
+    if (!url) {
+      return;
+    }
+
+    fetch(url, { method: 'GET' })
+      .then(result => result.json())
+      .then((data) => {
+        // console.log(`%cEldarion annotation collection: ${url}`, 'color: orange;');
+        // console.log(data);
+        handleAnnotationCollection(data, canvasId, receiveAnnotation);
+      })
+      .catch((error) => {
+        console.log('%cError fetching Homer translation annotations', 'color: red;');
+        console.log(error);
+      });
+  });
+}
+
+/**
+ * Process an AnnotationCollection so Mirador knows how to handle it.
+ * Basically iterate through the collection to retrieve the AnnotationPages and shove them
+ * into Mirador's application state
+ * 
+ * @param {object} collection JSON object representing an AnnotationCollection
+ * @param {string} parentUri which Canvas does this come from
+ * @param {function} receiveAnnotation callback function to stuff the fetched annotations into
+ */
+async function handleAnnotationCollection(collection, parentUri, receiveAnnotation) {
+  // Do we need to keep any info from the AnnotationCollection itself?
+  // const label = collection.label;
+
+  let nextPage = collection.first;
+  do {
+    // For each annotation page URL, resolve it, send it to the Redux store and return the
+    // URL of the next page, or 'undefined' if it does not exist
+    nextPage = await _fetchAnnotationPage(nextPage)
+      .then((data) => {
+        // console.log(`%cEldanrion annotation page: ${data.id}`, 'color: purple;');
+        // console.log(data);
+        if (data) {
+          receiveAnnotation(parentUri, nextPage, data);
+          return data.next;
+        } else {
+          return false;
+        }
+      })
+      .catch(() => {
+        nextPage = false;
+      });
+  } while (nextPage);
 }
 
 /**
@@ -205,25 +282,33 @@ function _process_georef_targets(targets) {
   return target;
 }
 
+// TODO: Eldarion endpoints must be configurable!
 /**
- * Use the provided Pleiades ID to get GeoJSON from the Pleiades API
  * 
- * @param {string} url 
+ * @param {object} canvas a canvas JSON data
+ * @param {string} endpoint should take value (translation-alignment|named-entities)
  */
-// function _pleiades2json(url) {
-//   // TODO: make this URL configurable?
-//   fetch(`${url}/json`);
-// }
+export function deriveCtsEndpoint(label, endpoint) {
+  if (!label) {
+    console.log('%cCan\'t derive CTS URN from Canvas. Couldn\'t find a label.', 'color: red;');
+    return;
+  }
 
+  // This relies on a canvas label structured like: 'folio 3r'
+  // This means that any front matter or misc pages will not work
+  if (label.includes('cover') || label.includes('matter') || label.includes('misc')) {
+    console.log(`%cRefused to try to derive CTS URN for canvas: ${label}`, 'color: red;');
+    return;
+  }
 
+  const truncatedLabel = label.slice(label.lastIndexOf(' ') + 1);
 
-
-
-
-
-
-function _parseXml(xmlString) {
-  const parser = new DOMParser();
-  const result = parser.parseFromString(xmlString, 'application/xml');
-  return result;
+  switch(endpoint) {
+    case 'translation-alignment':
+      return `https://aniop-atlas-staging.eldarion.com/wa/urn:cite2:hmt:msA.v1:${truncatedLabel}/translation-alignment/collection/text/`;
+    case 'named-entities':
+      return `https://explorehomer-feature-na-4qbljt.herokuapp.com/wa/urn:cite2:hmt:msA.v1:${truncatedLabel}/named-entities/collection/compound/`;
+    default:
+      return;
+  }
 }

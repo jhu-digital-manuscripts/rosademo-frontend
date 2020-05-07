@@ -12,24 +12,15 @@ import AnnotationBody from './annotationBody';
  *  }
  */
 export default class Annotation extends Component {
-  render() {
-    const { annotation } = this.props;
-
-    // The annotation has content if 'annotation.body' is an array with 1 or more elements,
-    // or is not an array and exists
-    const hasContent = Array.isArray(annotation.body)
-      ? annotation.body.length > 0
-      : !!annotation.body;
-
-    // If no content is detected, return early
-    if (!hasContent) {
-      return <></>;
+  _label(annotation) {
+    if (annotation.label) {
+      return <div className='annotation-label'>{annotation.label}</div>;
     }
 
-    const bodies = annotation.body.map((body, index) => (
-      <AnnotationBody body={body} key={index} />
-    ));
+    return <></>;
+  }
 
+  _creator(annotation) {
     let creator;
     if (annotation.creator) {
       if (typeof annotation.creator === 'string') {
@@ -52,11 +43,56 @@ export default class Annotation extends Component {
       creator = <></>;
     }
 
+    return creator;
+  }
+
+  _bodies(annotation) {
+    return annotation.body.map((body, index) => {
+      let className = '';
+      if (body.hasOwnProperty('language')) {
+        if (body.language === 'en') {
+          className = 'translation';
+        } else {
+          className = 'transcription';
+        }
+      }
+      return <AnnotationBody className={className} body={body} key={index} />;
+    });
+  }
+
+  render() {
+    const { annotation, targetedBy } = this.props;
+
+    // The annotation has content if 'annotation.body' is an array with 1 or more elements,
+    // or is not an array and exists
+    const hasContent = Array.isArray(annotation.body)
+      ? annotation.body.length > 0
+      : !!annotation.body;
+    // If no content is detected, return early
+    if (!hasContent) {
+      return <></>;
+    }
+
+    let targetedAnnotations;
+    const isTargeted = Array.isArray(targetedBy) && targetedBy.length > 0;
+    if (isTargeted) {
+      targetedAnnotations = (
+        <div className='targeted-annotations-container'>
+          {targetedBy.map((anno) => (
+            <Annotation annotation={anno.json} key={anno.json.id} />
+          ))}
+        </div>
+      );
+    } else {
+      targetedAnnotations = <></>;
+    }
+
     return (
       <div className='annotation'>
-        <div className='annotation-label'>{annotation.label}</div>
-        <div className='annotation-bodies'>{bodies}</div>
-        <div className='annotation-creator'>{creator}</div>
+        {this._label(annotation)}
+        <div className='annotation-bodies'>{this._bodies(annotation)}</div>
+        {this._creator(annotation)}
+        {targetedAnnotations}
       </div>
     );
   }

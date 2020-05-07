@@ -22,14 +22,14 @@ export default class AnnotationBody extends Component {
       content = (
         <>
           <div style={{ fontStyle: 'italic' }}>Tag: </div>
-          <div style={{ textIndent: '8px' }}>{body.value}</div>
+          <div style={{ textIndent: '12px' }}>{body.value}</div>
         </>
       );
     } else if (body.purpose === 'commenting') {
       content = (
         <>
           <div style={{ fontStyle: 'italic' }}>Comment: </div>
-          <div style={{ textIndent: '8px' }}>{body.value}</div>
+          <div style={{ textIndent: '12px' }}>{body.value}</div>
         </>
       );
     } else if (body.purpose === 'identifying') {
@@ -40,7 +40,12 @@ export default class AnnotationBody extends Component {
           </a>
         </div>
       );
-    } else {
+    } else if (body.type === 'TextualBody') {
+      if (body.language === 'en') {
+        content = <div className='translation'>{body.value}</div>;
+      } else if (body.language) {
+        content = <div className='transcription'>{body.value}</div>;
+      }
     }
 
     return <div className='annotation-body'>{content}</div>;
