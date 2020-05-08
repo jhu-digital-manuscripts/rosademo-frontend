@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-
+import {
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
+  Typography,
+} from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 /**
  * Render an annotation body. Specifics of how it is rendered may
  * depend on the properties of the annotation body, such as type,
@@ -42,7 +48,23 @@ export default class AnnotationBody extends Component {
       );
     } else if (body.type === 'TextualBody') {
       if (body.language === 'en') {
-        content = <div className='translation'>{body.value}</div>;
+        content = (
+          <ExpansionPanel
+            square={true}
+            style={{
+              WebkitBoxShadow: 'none',
+              MozBoxShadow: 'none',
+              boxShadow: 'none',
+            }}
+          >
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant='body2'>Translation</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <div className='translation'>{body.value}</div>;
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        );
       } else if (body.language) {
         content = <div className='transcription'>{body.value}</div>;
       }
