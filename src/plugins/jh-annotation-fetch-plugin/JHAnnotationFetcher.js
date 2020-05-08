@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import isEqual from 'lodash/isEqual';
-import { getRosaWebAnnotations, getUnprocessedRosaWebAnnotations } from './webAnnotationUtils';
+import {
+  getRosaWebAnnotations,
+  getUnprocessedRosaWebAnnotations,
+} from './webAnnotationUtils';
 
 export default class JHAnnotationFetcher extends Component {
   constructor(props) {
@@ -21,8 +24,8 @@ export default class JHAnnotationFetcher extends Component {
   componentDidUpdate(prevProps) {
     const { canvases } = this.props;
 
-    const currentCanvasIds = canvases.map(canvas => canvas.id);
-    const prevCanvasIds = prevProps.canvases.map(canvas => canvas.id);
+    const currentCanvasIds = canvases.map((canvas) => canvas.id);
+    const prevCanvasIds = prevProps.canvases.map((canvas) => canvas.id);
 
     if (!isEqual(currentCanvasIds, prevCanvasIds)) {
       this.fetchAnnotations();
@@ -31,8 +34,6 @@ export default class JHAnnotationFetcher extends Component {
 
   render() {
     const { TargetComponent, targetProps } = this.props;
-    return (
-      <TargetComponent {...targetProps}></TargetComponent>
-    );
+    return <TargetComponent {...targetProps}></TargetComponent>;
   }
 }
