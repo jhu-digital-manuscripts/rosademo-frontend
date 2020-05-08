@@ -4,12 +4,12 @@ import { annotationsMapReducer } from './reducers';
 
 export default {
   name: 'JHAnnotationFetchPlugin',
-  target: "WindowCanvasNavigationControls",
+  target: 'WindowCanvasNavigationControls',
   mode: 'wrap',
   component: JHAnnotationFetcher,
   mapStateToProps,
   mapDispatchToProps,
   reducers: {
-    annotationsMapReducer
-  }
+    annotationsMapReducer,
+  },
 };

@@ -5,8 +5,7 @@ import CanvasAnnotations from 'mirador/dist/es/src/containers/CanvasAnnotations'
 import CompanionWindow from 'mirador/dist/es/src/containers/CompanionWindow';
 import ns from 'mirador/dist/es/src/config/css-ns';
 import AnnotationPage from './components/annotationPage';
-import { CssBaseline } from '@material-ui/core';
-import Box from '@material-ui/core/Box';
+import { CssBaseline, Box } from '@material-ui/core';
 import 'typeface-roboto';
 
 require('typeface-roboto');
@@ -22,7 +21,6 @@ export default class JHAnnotationsPanel extends Component {
     const { classes, t, windowId, id } = this.props.targetProps;
 
     const {
-      annotationCount,
       selectedCanvases,
       presentAnnotations,
       canvasLabels,
@@ -74,7 +72,9 @@ export default class JHAnnotationsPanel extends Component {
           >
             <div className={classes.section}>
               <Typography component='p' variant='subtitle2'>
-                {t('showingNumAnnotations', { number: annotationCount })}
+                {t('showingNumAnnotations', {
+                  number: Object.values(annoOfAnno).length,
+                })}
               </Typography>
             </div>
 

@@ -10,5 +10,5 @@ export default {
   mode: 'wrap',
   component: JHAnnotationsPanel,
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 };
