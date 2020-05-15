@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
-import {
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
-  Typography,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import StyledExpansionPanel from './styledExpansionPanel';
 /**
  * Render an annotation body. Specifics of how it is rendered may
  * depend on the properties of the annotation body, such as type,
@@ -18,6 +12,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
  *    body: { ... }
  *  }
  */
+
 export default class AnnotationBody extends Component {
   render() {
     const { body } = this.props;
@@ -27,15 +22,19 @@ export default class AnnotationBody extends Component {
     if (body.purpose === 'tagging') {
       content = (
         <>
-          <div style={{ fontStyle: 'italic' }}>Tag: </div>
-          <div style={{ textIndent: '12px' }}>{body.value}</div>
+          <div>
+            <span style={{ fontStyle: 'italic' }}>Tag: </span>
+            <span>{body.value}</span>
+          </div>
         </>
       );
     } else if (body.purpose === 'commenting') {
       content = (
         <>
-          <div style={{ fontStyle: 'italic' }}>Comment: </div>
-          <div style={{ textIndent: '12px' }}>{body.value}</div>
+          <div>
+            <span style={{ fontStyle: 'italic' }}>Comment: </span>
+            <span>{body.value}</span>
+          </div>
         </>
       );
     } else if (body.purpose === 'identifying') {
@@ -49,24 +48,17 @@ export default class AnnotationBody extends Component {
     } else if (body.type === 'TextualBody') {
       if (body.language === 'en') {
         content = (
-          <ExpansionPanel
-            square={true}
-            style={{
-              WebkitBoxShadow: 'none',
-              MozBoxShadow: 'none',
-              boxShadow: 'none',
-            }}
-          >
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant='body2'>Translation</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <div className='translation'>{body.value}</div>;
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+          <StyledExpansionPanel
+            title='Translation'
+            annotation={body.value}
+          ></StyledExpansionPanel>
         );
       } else if (body.language) {
-        content = <div className='transcription'>{body.value}</div>;
+        content = (
+          <div className='transcription' style={{ paddingTop: '8px' }}>
+            {body.value}
+          </div>
+        );
       }
     }
 
