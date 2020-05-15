@@ -35,7 +35,7 @@ export default class AnnotationBody extends Component {
       content = (
         <>
           <div style={{ fontStyle: 'italic' }}>Comment: </div>
-          <div style={{ textIndent: '12px' }}>{body.value}</div>
+          <div>{body.value}</div>
         </>
       );
     } else if (body.purpose === 'identifying') {
@@ -61,7 +61,7 @@ export default class AnnotationBody extends Component {
               <Typography variant='body2'>Translation</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <div className='translation'>{body.value}</div>;
+              <div className='translation'>{body.value}</div>
             </ExpansionPanelDetails>
           </ExpansionPanel>
         );
