@@ -123,7 +123,7 @@ export function _getEldarionAnnotations(canvases, receiveAnnotation) {
     const target = `${discoveryUrl}?canvas_id=${canvasId}`;
 
     fetch(target, { method: 'GET' })
-      .then(result => result.json())
+      .then(result => _jsonify(result))
       .then((data) => {
         console.assert(!!data, `No response was found: ${target}`);
         console.assert(Array.isArray(data.collections), 'data.collections was not found or was not an array')
@@ -140,10 +140,12 @@ export function _getEldarionAnnotations(canvases, receiveAnnotation) {
 
           // This is nasty...
           fetch(collectionId, { method: 'GET' })
-            .then(result => result.json())
-            .then(collection => handleAnnotationCollection(collection, canvasId, receiveAnnotation));
+            .then(result => _jsonify(result))
+            .then(collection => handleAnnotationCollection(collection, canvasId, receiveAnnotation))
+            .catch(error => console.log(`%c${collectionId} : ${error}`, 'color: red;'));
         });
-      });
+      })
+      .catch(error => console.log(`${target} : ${error}`));
   });
 }
 
@@ -163,15 +165,16 @@ async function handleAnnotationCollection(
 ) {
   // Do we need to keep any info from the AnnotationCollection itself?
   // const label = collection.label;
-  console.log(`%c${collection.label}`, 'color:green;');
+  console.log(`%cCollection: ${collection.label}`, 'color:green;');
+  console.log(collection);
   let nextPage = collection.first;
   do {
     // For each annotation page URL, resolve it, send it to the Redux store and return the
     // URL of the next page, or 'undefined' if it does not exist
     nextPage = await _fetchAnnotationPage(nextPage)
       .then((data) => {
-        // console.log(`%cEldanrion annotation page: ${data.id}`, 'color: purple;');
-        // console.log(data);
+        console.log(`%cEldanrion annotation page: ${data.id}`, 'color: purple;');
+        console.log(data);
         if (data) {
           receiveAnnotation(parentUri, nextPage, data);
           return data.next;
@@ -185,6 +188,14 @@ async function handleAnnotationCollection(
   } while (nextPage);
 }
 
+function _jsonify(response) {
+  if (!response.ok) {
+    return Promise.reject(`${response.status} : ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
 /**
  *
  * @param {string} url target URL for the annotation page
@@ -192,7 +203,7 @@ async function handleAnnotationCollection(
  */
 function _fetchAnnotationPage(url) {
   return fetch(url, { method: 'GET' })
-    .then((result) => result.json())
+    .then((result) => _jsonify(result))
     .catch((error) => console.log(`Error getting ${url}: ${error}`));
 }
 
