@@ -114,27 +114,6 @@ export function _getEldarionAnnotations(canvases, receiveAnnotation) {
 
   canvases.forEach((canvas) => {
     const canvasId = canvas.id;
-    // const label = canvas.__jsonld.label;
-
-    // const url = deriveCtsEndpoint(label, 'translation-alignment');
-    // if (!url) {
-    //   return;
-    // }
-
-    // fetch(url, { method: 'GET' })
-    //   .then((result) => result.json())
-    //   .then((data) => {
-    //     // console.log(`%cEldarion annotation collection: ${url}`, 'color: orange;');
-    //     // console.log(data);
-    //     handleAnnotationCollection(data, canvasId, receiveAnnotation);
-    //   })
-    //   .catch((error) => {
-    //     console.log(
-    //       '%cError fetching Homer translation annotations',
-    //       'color: red;'
-    //     );
-    //     console.log(error);
-    //   });
 
     /**
      * New section will try a known URL to reach the trial discovery service in order to
@@ -155,7 +134,7 @@ export function _getEldarionAnnotations(canvases, receiveAnnotation) {
         // Should be an array of collections
         data.collections.forEach((collectionId) => {
           // For now and simplicity, let's only take translation and named entity annotations 
-          if (!collectionId.includes('translation')) {
+          if (!collectionId.includes('translation') && !collectionId.includes('named-entities')) {
             return;
           }
 
@@ -184,7 +163,7 @@ async function handleAnnotationCollection(
 ) {
   // Do we need to keep any info from the AnnotationCollection itself?
   // const label = collection.label;
-
+  console.log(`%c${collection.label}`, 'color:green;');
   let nextPage = collection.first;
   do {
     // For each annotation page URL, resolve it, send it to the Redux store and return the
