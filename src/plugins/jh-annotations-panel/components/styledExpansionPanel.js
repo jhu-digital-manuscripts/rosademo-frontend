@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
 
 const styles = (theme) => ({
   root: {
@@ -28,6 +29,10 @@ const styles = (theme) => ({
   },
   expanded: { color: '#3F51B5' },
 });
+
+function content() {
+
+}
 
 function StyledExpansionPanel(props) {
   const { classes } = props;

@@ -114,26 +114,56 @@ export function _getEldarionAnnotations(canvases, receiveAnnotation) {
 
   canvases.forEach((canvas) => {
     const canvasId = canvas.id;
-    const label = canvas.__jsonld.label;
+    // const label = canvas.__jsonld.label;
 
-    const url = deriveCtsEndpoint(label, 'translation-alignment');
-    if (!url) {
-      return;
-    }
+    // const url = deriveCtsEndpoint(label, 'translation-alignment');
+    // if (!url) {
+    //   return;
+    // }
 
-    fetch(url, { method: 'GET' })
-      .then((result) => result.json())
+    // fetch(url, { method: 'GET' })
+    //   .then((result) => result.json())
+    //   .then((data) => {
+    //     // console.log(`%cEldarion annotation collection: ${url}`, 'color: orange;');
+    //     // console.log(data);
+    //     handleAnnotationCollection(data, canvasId, receiveAnnotation);
+    //   })
+    //   .catch((error) => {
+    //     console.log(
+    //       '%cError fetching Homer translation annotations',
+    //       'color: red;'
+    //     );
+    //     console.log(error);
+    //   });
+
+    /**
+     * New section will try a known URL to reach the trial discovery service in order to
+     * get annotation endpoints
+     */
+    const discoveryUrl = 'https://explorehomer-feature-wa-jm1koi.herokuapp.com/wa/discovery/';
+    const target = `${discoveryUrl}?canvas_id=${canvasId}`;
+
+    fetch(target, { method: 'GET' })
+      .then(result => result.json())
       .then((data) => {
-        // console.log(`%cEldarion annotation collection: ${url}`, 'color: orange;');
-        // console.log(data);
-        handleAnnotationCollection(data, canvasId, receiveAnnotation);
-      })
-      .catch((error) => {
-        console.log(
-          '%cError fetching Homer translation annotations',
-          'color: red;'
-        );
-        console.log(error);
+        console.assert(!!data, `No response was found: ${target}`);
+        console.assert(Array.isArray(data.collections), 'data.collections was not found or was not an array')
+
+        if (!Array.isArray(data.collections)) {
+          return;
+        }
+        // Should be an array of collections
+        data.collections.forEach((collectionId) => {
+          // For now and simplicity, let's only take translation and named entity annotations 
+          if (!collectionId.includes('translation')) {
+            return;
+          }
+
+          // This is nasty...
+          fetch(collectionId, { method: 'GET' })
+            .then(result => result.json())
+            .then(collection => handleAnnotationCollection(collection, canvasId, receiveAnnotation));
+        });
       });
   });
 }
@@ -184,7 +214,7 @@ async function handleAnnotationCollection(
 function _fetchAnnotationPage(url) {
   return fetch(url, { method: 'GET' })
     .then((result) => result.json())
-    .catch((error) => console.log(error));
+    .catch((error) => console.log(`Error getting ${url}: ${error}`));
 }
 
 /**
