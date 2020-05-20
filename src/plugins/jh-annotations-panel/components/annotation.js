@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import AnnotationBody from './annotationBody';
-import {
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
-  Typography,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import StyledExpansionPanel from './styledExpansionPanel';
 
 /**
  * Should display an annotation, possibly decorated by other annotations
@@ -18,6 +12,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
  *    ]
  *  }
  */
+
 export default class Annotation extends Component {
   _label(annotation) {
     if (annotation.label) {
@@ -84,25 +79,12 @@ export default class Annotation extends Component {
     const isTargeted = Array.isArray(targetedBy) && targetedBy.length > 0;
     if (isTargeted) {
       targetedAnnotations = (
-        <ExpansionPanel
-          square={true}
-          style={{
-            WebkitBoxShadow: 'none',
-            MozBoxShadow: 'none',
-            boxShadow: 'none',
-          }}
-        >
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant='body2'>Georeference</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <div className='targeted-annotations-container'>
-              {targetedBy.map((anno) => (
-                <Annotation annotation={anno.json} key={anno.json.id} />
-              ))}
-            </div>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+        <StyledExpansionPanel
+          title='Georeference'
+          annotation={targetedBy.map((anno) => (
+            <Annotation annotation={anno.json} key={anno.json.id} />
+          ))}
+        ></StyledExpansionPanel>
       );
     } else {
       targetedAnnotations = <></>;
