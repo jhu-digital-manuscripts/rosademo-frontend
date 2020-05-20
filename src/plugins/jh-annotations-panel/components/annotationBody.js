@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-import {
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
-  Typography,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import StyledExpansionPanel from './styledExpansionPanel';
+import { Map, Markerm, Popup, TileLayer } from 'react-leaflet';
 /**
  * Render an annotation body. Specifics of how it is rendered may
  * depend on the properties of the annotation body, such as type,
@@ -18,7 +13,25 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
  *    body: { ... }
  *  }
  */
+
 export default class AnnotationBody extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { georef: Object, position: ['', ''] };
+    this.getGeorefMapData = this.getGeorefMapData.bind(this);
+  }
+
+  getGeorefMapData(georefUrl) {
+    fetch(georefUrl, { method: 'GET' })
+      .then((result) => result.json())
+      .then((data) => {
+        this.setState({ georef: data, position: data.reprPoint });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   render() {
     const { body } = this.props;
 
@@ -27,46 +40,55 @@ export default class AnnotationBody extends Component {
     if (body.purpose === 'tagging') {
       content = (
         <>
-          <div style={{ fontStyle: 'italic' }}>Tag: </div>
-          <div style={{ textIndent: '12px' }}>{body.value}</div>
+          <div>
+            <span style={{ fontStyle: 'italic' }}>Tag: </span>
+            <span>{body.value}</span>
+          </div>
         </>
       );
     } else if (body.purpose === 'commenting') {
       content = (
         <>
-          <div style={{ fontStyle: 'italic' }}>Comment: </div>
-          <div>{body.value}</div>
+          <div>
+            <span style={{ fontStyle: 'italic' }}>Comment: </span>
+            <span>{body.value}</span>
+          </div>
         </>
       );
     } else if (body.purpose === 'identifying') {
+      let georefUrl;
+      if (body.source != undefined && body.source.includes('pleiades')) {
+        georefUrl = body.source + '/json';
+        this.getGeorefMapData(georefUrl);
+      }
       content = (
-        <div>
-          <a href={body.source} target='_blank'>
-            {body.source}
-          </a>
-        </div>
+        <Map
+          center={this.state.position}
+          zoom={13}
+          style={{ height: '250px' }}
+        ></Map>
       );
+      // content = (
+      //   <div>
+      //     <a href={body.source} target='_blank'>
+      //       {body.source}
+      //     </a>
+      //   </div>
+      // );
     } else if (body.type === 'TextualBody') {
       if (body.language === 'en') {
         content = (
-          <ExpansionPanel
-            square={true}
-            style={{
-              WebkitBoxShadow: 'none',
-              MozBoxShadow: 'none',
-              boxShadow: 'none',
-            }}
-          >
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant='body2'>Translation</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <div className='translation'>{body.value}</div>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+          <StyledExpansionPanel
+            title='Translation'
+            annotation={body.value}
+          ></StyledExpansionPanel>
         );
       } else if (body.language) {
-        content = <div className='transcription'>{body.value}</div>;
+        content = (
+          <div className='transcription' style={{ paddingTop: '8px' }}>
+            {body.value}
+          </div>
+        );
       }
     }
 
