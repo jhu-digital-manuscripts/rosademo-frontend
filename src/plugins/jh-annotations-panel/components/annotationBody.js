@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import StyledExpansionPanel from './styledExpansionPanel';
-import { Map, Markerm, Popup, TileLayer } from 'react-leaflet';
+import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 /**
  * Render an annotation body. Specifics of how it is rendered may
  * depend on the properties of the annotation body, such as type,

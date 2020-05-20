@@ -4,16 +4,5 @@
 
 .annotation {
   border-bottom: 2px solid lightgrey;
-  padding: 8px;
-  margin: 8px 0;
-}
-
-.translation {
-  margin-left: 12px;
-}
-
-.targeted-annotations-container {
-  border-left: 2px solid lightblue;
-  margin-left: 12px;
-  padding-left: 12px;
+  padding-bottom: 8px;
 }
