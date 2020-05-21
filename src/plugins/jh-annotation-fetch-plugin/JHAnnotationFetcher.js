@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import isEqual from 'lodash/isEqual';
-import {
-  getRosaWebAnnotations,
-  getUnprocessedRosaWebAnnotations,
-} from './webAnnotationUtils';
+import { getRosaWebAnnotations } from './JHAnnotationService';
+import { getEldarionAnnotations } from './EldarionAnnotationService';
 
 export default class JHAnnotationFetcher extends Component {
   constructor(props) {
@@ -13,8 +11,8 @@ export default class JHAnnotationFetcher extends Component {
 
   fetchAnnotations() {
     const { canvases, receiveAnnotation } = this.props;
-    // getRosaWebAnnotations(canvases, receiveAnnotation);
-    getUnprocessedRosaWebAnnotations(canvases, receiveAnnotation);
+    getRosaWebAnnotations(canvases, receiveAnnotation);
+    getEldarionAnnotations(canvases, receiveAnnotation);
   }
 
   componentDidMount() {
