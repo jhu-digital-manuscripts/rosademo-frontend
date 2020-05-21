@@ -28,7 +28,7 @@ export default class AnnotationBody extends Component {
         this.setState({ georef: data, position: data.reprPoint });
       })
       .catch((error) => {
-        console.log(error);
+        console.log('Error fetching map data', error);
       });
   }
 
