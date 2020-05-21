@@ -119,7 +119,7 @@ export function _getEldarionAnnotations(canvases, receiveAnnotation) {
      * New section will try a known URL to reach the trial discovery service in order to
      * get annotation endpoints
      */
-    const discoveryUrl = 'https://explorehomer-feature-wa-jm1koi.herokuapp.com/wa/discovery/';
+    const discoveryUrl = 'https://aniop-atlas-staging.eldarion.com/wa/discovery/';
     const target = `${discoveryUrl}?canvas_id=${canvasId}`;
 
     fetch(target, { method: 'GET' })
