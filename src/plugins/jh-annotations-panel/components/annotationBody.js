@@ -21,6 +21,17 @@ export default class AnnotationBody extends Component {
     this.getGeorefMapData = this.getGeorefMapData.bind(this);
   }
 
+  componentDidMount() {
+    const { body } = this.props;
+    let georefUrl;
+    if (body.purpose === 'identifying') {
+      if (body.source != undefined && body.source.includes('pleiades')) {
+        georefUrl = body.source + '/json';
+        this.getGeorefMapData(georefUrl);
+      }
+    }
+  }
+
   getGeorefMapData(georefUrl) {
     fetch(georefUrl, { method: 'GET' })
       .then((result) => result.json())
@@ -55,18 +66,32 @@ export default class AnnotationBody extends Component {
           </div>
         </>
       );
-    } else if (body.purpose === 'identifying') {
-      let georefUrl;
-      if (body.source != undefined && body.source.includes('pleiades')) {
-        georefUrl = body.source + '/json';
-        this.getGeorefMapData(georefUrl);
-      }
+    } else if (
+      body.purpose === 'identifying' &&
+      this.state.position !== ['', '']
+    ) {
+      //console.log(this.state.position);
+      // let georefUrl;
+      // if (body.source != undefined && body.source.includes('pleiades')) {
+      //   georefUrl = body.source + '/json';
+      //   this.getGeorefMapData(georefUrl);
+      // }
       content = (
         <Map
           center={this.state.position}
-          zoom={13}
+          zoom={5}
           style={{ height: '250px' }}
-        ></Map>
+          scrollWheelZoom={false}
+          touchZoom={false}
+        >
+          <TileLayer
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
+          />
+          {/* <Marker position={this.state.position}>
+            <Popup>Ayy</Popup>
+          </Marker> */}
+        </Map>
       );
       // content = (
       //   <div>
