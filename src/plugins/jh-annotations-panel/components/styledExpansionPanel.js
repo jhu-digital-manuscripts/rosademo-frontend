@@ -34,9 +34,7 @@ function StyledExpansionPanel(props) {
   let className;
   let annotationContent;
   const annotation = props.annotation;
-  //console.log(typeof annotation);
   if (typeof annotation === 'string') {
-    //console.log(annotation);
     className = 'stringAnno';
     annotationContent = (
       <SanitizedHtml
@@ -46,7 +44,6 @@ function StyledExpansionPanel(props) {
       />
     );
   } else if (typeof annotation === 'object') {
-    //console.log(annotation);
     className = 'mapAnno';
     annotationContent = annotation;
   }
