@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
 import {
   ExpansionPanelSummary,
   withStyles,
@@ -51,7 +52,13 @@ function StyledExpansionPanel(props) {
           <Typography className={classes.heading}>{props.title}</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails classes={{ root: classes.root }}>
-          <div>{props.annotation}</div>
+          <SanitizedHtml
+            ruleSet='mirador2'
+            htmlString={props.annotation}
+            className='transcription'
+            style={{ padding: '8px' }}
+          />
+          ;
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
 import StyledExpansionPanel from './styledExpansionPanel';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 /**
@@ -109,11 +110,12 @@ export default class AnnotationBody extends Component {
           ></StyledExpansionPanel>
         );
       } else if (body.language) {
-        content = (
-          <div className='transcription' style={{ paddingTop: '8px' }}>
-            {body.value}
-          </div>
-        );
+        <SanitizedHtml
+          ruleSet='mirador2'
+          htmlString={body.value}
+          className='transcription'
+          style={{ padding: '8px' }}
+        />;
       }
     }
 
