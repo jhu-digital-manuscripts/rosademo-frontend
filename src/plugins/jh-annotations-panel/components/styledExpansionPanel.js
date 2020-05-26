@@ -47,7 +47,6 @@ function StyledExpansionPanel(props) {
     className = 'mapAnno';
     annotationContent = annotation;
   }
-  console.log(className);
   return (
     <div className={classes.root}>
       <ExpansionPanel

@@ -69,38 +69,38 @@ export default class AnnotationBody extends Component {
       );
     } else if (
       body.purpose === 'identifying' &&
-      this.state.position !== ['', '']
+      this.state.georef.reprPoint !== undefined
     ) {
-      //console.log(this.state.position);
-      // let georefUrl;
-      // if (body.source != undefined && body.source.includes('pleiades')) {
-      //   georefUrl = body.source + '/json';
-      //   this.getGeorefMapData(georefUrl);
-      // }
+      let coords = this.state.georef.reprPoint?.reverse();
+      let mapProps = this.state.georef.features[0];
+      let markerText;
+      if (mapProps?.properties?.snippet !== undefined) {
+        markerText = mapProps?.properties?.snippet;
+      } else {
+        markerText = 'unknown';
+      }
       content = (
-        <Map
-          center={this.state.position}
-          zoom={5}
-          style={{ height: '250px' }}
-          scrollWheelZoom={false}
-          touchZoom={false}
-        >
-          <TileLayer
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
-          />
-          {/* <Marker position={this.state.position}>
-            <Popup>Ayy</Popup>
-          </Marker> */}
-        </Map>
+        <div>
+          <Map
+            center={coords}
+            zoom={5}
+            style={{ height: '250px' }}
+            scrollWheelZoom={false}
+            touchZoom={false}
+          >
+            <TileLayer
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
+            />
+            <Marker position={coords}>
+              <Popup autoPan={true}>{markerText}</Popup>
+            </Marker>
+          </Map>
+          <a href={body.source} target='_blank'>
+            View source externally
+          </a>
+        </div>
       );
-      // content = (
-      //   <div>
-      //     <a href={body.source} target='_blank'>
-      //       {body.source}
-      //     </a>
-      //   </div>
-      // );
     } else if (body.type === 'TextualBody') {
       if (body.language === 'en') {
         content = (
