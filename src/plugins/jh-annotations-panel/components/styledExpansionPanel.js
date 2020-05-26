@@ -31,6 +31,26 @@ const styles = (theme) => ({
 
 function StyledExpansionPanel(props) {
   const { classes } = props;
+  let className;
+  let annotationContent;
+  const annotation = props.annotation;
+  //console.log(typeof annotation);
+  if (typeof annotation === 'string') {
+    //console.log(annotation);
+    className = 'stringAnno';
+    annotationContent = (
+      <SanitizedHtml
+        ruleSet='mirador2'
+        htmlString={props.annotation}
+        style={{ padding: '8px' }}
+      />
+    );
+  } else if (typeof annotation === 'object') {
+    //console.log(annotation);
+    className = 'mapAnno';
+    annotationContent = annotation;
+  }
+  console.log(className);
   return (
     <div className={classes.root}>
       <ExpansionPanel
@@ -52,13 +72,7 @@ function StyledExpansionPanel(props) {
           <Typography className={classes.heading}>{props.title}</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails classes={{ root: classes.root }}>
-          <SanitizedHtml
-            ruleSet='mirador2'
-            htmlString={props.annotation}
-            className='transcription'
-            style={{ padding: '8px' }}
-          />
-          ;
+          <div className={className}>{annotationContent}</div>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>

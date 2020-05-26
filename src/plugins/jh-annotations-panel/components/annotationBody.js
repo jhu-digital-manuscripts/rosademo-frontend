@@ -110,12 +110,13 @@ export default class AnnotationBody extends Component {
           ></StyledExpansionPanel>
         );
       } else if (body.language) {
-        <SanitizedHtml
-          ruleSet='mirador2'
-          htmlString={body.value}
-          className='transcription'
-          style={{ padding: '8px' }}
-        />;
+        content = (
+          <SanitizedHtml
+            ruleSet='mirador2'
+            htmlString={body.value}
+            className='transcription'
+          />
+        );
       }
     }
 
