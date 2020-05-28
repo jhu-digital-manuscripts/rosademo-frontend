@@ -29,10 +29,6 @@ const styles = (theme) => ({
   expanded: { color: '#3F51B5' },
 });
 
-function content() {
-
-}
-
 function StyledExpansionPanel(props) {
   const { classes } = props;
   let className;
