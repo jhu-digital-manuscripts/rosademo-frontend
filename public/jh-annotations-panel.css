@@ -6,3 +6,9 @@
   border-bottom: 2px solid lightgrey;
   padding-bottom: 8px;
 }
+
+.annotation ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

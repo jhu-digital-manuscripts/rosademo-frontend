@@ -1,5 +1,5 @@
-// import mirador from 'mirador';
 import { getVisibleCanvases } from 'mirador/dist/es/src/state/selectors/canvases';
+import { getManifest } from 'mirador/dist/es/src/state/selectors/manifests';
 import { receiveAnnotation } from 'mirador/dist/es/src/state/actions/annotation';
 
 /*
@@ -12,17 +12,15 @@ import { receiveAnnotation } from 'mirador/dist/es/src/state/actions/annotation'
  * canvases: mirador.selectors.getVisibleCanvases
  */
 export function mapStateToProps(state, props) {
+  const { windowId } = props.targetProps;
+
   return {
-    canvases: getVisibleCanvases(state, {
-      windowId: props.targetProps.windowId,
-    }),
+    canvases: getVisibleCanvases(state, { windowId }),
     config: state.config,
+    manifest: getManifest(state, { windowId })?.json
   };
 }
 
 export const mapDispatchToProps = {
   receiveAnnotation,
 };
-
-// TODO: need custom reducer to save annotation target data for custom
-// Annotation Panel plugin

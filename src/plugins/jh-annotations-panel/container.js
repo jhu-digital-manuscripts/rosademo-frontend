@@ -37,12 +37,3 @@ export const mapStateToProps = (state, props) => {
 };
 
 export const mapDispatchToProps = {};
-// const styles = theme => ({
-//   section: {
-//     borderBottom: `.5px solid ${theme.palette.section_divider}`,
-//     paddingBottom: theme.spacing(1),
-//     paddingLeft: theme.spacing(2),
-//     paddingRight: theme.spacing(1),
-//     paddingTop: theme.spacing(2),
-//   },
-// });

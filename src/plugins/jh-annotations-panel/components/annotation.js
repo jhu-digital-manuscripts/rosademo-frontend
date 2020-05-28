@@ -80,7 +80,7 @@ export default class Annotation extends Component {
     if (isTargeted) {
       targetedAnnotations = (
         <StyledExpansionPanel
-          title='Georeference'
+          title='Named Entities'
           annotation={targetedBy.map((anno) => (
             <Annotation annotation={anno.json} key={anno.json.id} />
           ))}

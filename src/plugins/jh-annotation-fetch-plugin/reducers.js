@@ -120,7 +120,7 @@ function findTargets(annotation) {
       (t) => typeof t === 'string' && t.startsWith('urn:cts')
     );
     if (cts && cts.includes('@')) {
-      targetText = cts.slice(cts.lastIndexOf('@') + 1);
+      targetText = cts.slice(cts.lastIndexOf('@') + 1, cts.indexOf('['));
     }
   } else if (typeof target === 'object') {
     if (target.type === 'SpecificResource' && target.source.type === 'Canvas') {
