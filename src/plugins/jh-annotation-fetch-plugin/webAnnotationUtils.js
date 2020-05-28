@@ -333,7 +333,7 @@ export function deriveCtsEndpoint(label, endpoint) {
 
   switch (endpoint) {
     case 'translation-alignment':
-      return `https://aniop-atlas-staging.eldarion.com/wa/urn:cite2:hmt:msA.v1:${truncatedLabel}/translation-alignment/collection/text/`;
+      return `https://aniop-atlas-staging.eldarion.com/wa/urn:cite2:hmt:msA.v1:${truncatedLabel}/translation-alignment/collection/`;
     case 'named-entities':
       return `https://explorehomer-feature-na-4qbljt.herokuapp.com/wa/urn:cite2:hmt:msA.v1:${truncatedLabel}/named-entities/collection/compound/`;
     default:

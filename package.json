@@ -17,6 +17,7 @@
     "@material-ui/icons": "^4.9.1",
     "leaflet": "^1.6.0",
     "lodash": "^4.17.15",
+    "react-leaflet": "^2.7.0",
     "typeface-roboto": "0.0.75"
   },
   "devDependencies": {
