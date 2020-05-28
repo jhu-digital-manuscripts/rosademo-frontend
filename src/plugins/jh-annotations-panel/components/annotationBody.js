@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
 import StyledExpansionPanel from './styledExpansionPanel';
+import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 /**
  * Render an annotation body. Specifics of how it is rendered may
  * depend on the properties of the annotation body, such as type,
@@ -14,6 +16,34 @@ import StyledExpansionPanel from './styledExpansionPanel';
  */
 
 export default class AnnotationBody extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { georef: Object, position: ['', ''] };
+    this.getGeorefMapData = this.getGeorefMapData.bind(this);
+  }
+
+  componentDidMount() {
+    const { body } = this.props;
+    let georefUrl;
+    if (body.purpose === 'identifying') {
+      if (body.source != undefined && body.source.includes('pleiades')) {
+        georefUrl = body.source + '/json';
+        this.getGeorefMapData(georefUrl);
+      }
+    }
+  }
+
+  getGeorefMapData(georefUrl) {
+    fetch(georefUrl, { method: 'GET' })
+      .then((result) => result.json())
+      .then((data) => {
+        this.setState({ georef: data, position: data.reprPoint });
+      })
+      .catch((error) => {
+        console.log('Error fetching map data', error);
+      });
+  }
+
   render() {
     const { body } = this.props;
 
@@ -37,11 +67,37 @@ export default class AnnotationBody extends Component {
           </div>
         </>
       );
-    } else if (body.purpose === 'identifying') {
+    } else if (
+      body.purpose === 'identifying' &&
+      this.state.georef.reprPoint !== undefined
+    ) {
+      let coords = this.state.georef.reprPoint?.reverse();
+      let mapProps = this.state.georef.features[0];
+      let markerText;
+      if (mapProps?.properties?.snippet !== undefined) {
+        markerText = mapProps?.properties?.snippet;
+      } else {
+        markerText = 'unknown';
+      }
       content = (
         <div>
+          <Map
+            center={coords}
+            zoom={5}
+            style={{ height: '250px' }}
+            scrollWheelZoom={false}
+            touchZoom={false}
+          >
+            <TileLayer
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
+            />
+            <Marker position={coords}>
+              <Popup autoPan={true}>{markerText}</Popup>
+            </Marker>
+          </Map>
           <a href={body.source} target='_blank'>
-            {body.source}
+            View source externally
           </a>
         </div>
       );
@@ -55,9 +111,11 @@ export default class AnnotationBody extends Component {
         );
       } else if (body.language) {
         content = (
-          <div className='transcription' style={{ paddingTop: '8px' }}>
-            {body.value}
-          </div>
+          <SanitizedHtml
+            ruleSet='mirador2'
+            htmlString={body.value}
+            className='transcription'
+          />
         );
       }
     }

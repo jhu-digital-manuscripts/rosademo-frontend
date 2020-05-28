@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
 import {
   ExpansionPanelSummary,
   withStyles,
@@ -30,6 +31,22 @@ const styles = (theme) => ({
 
 function StyledExpansionPanel(props) {
   const { classes } = props;
+  let className;
+  let annotationContent;
+  const annotation = props.annotation;
+  if (typeof annotation === 'string') {
+    className = 'stringAnno';
+    annotationContent = (
+      <SanitizedHtml
+        ruleSet='mirador2'
+        htmlString={props.annotation}
+        style={{ padding: '8px' }}
+      />
+    );
+  } else if (typeof annotation === 'object') {
+    className = 'mapAnno';
+    annotationContent = annotation;
+  }
   return (
     <div className={classes.root}>
       <ExpansionPanel
@@ -51,7 +68,7 @@ function StyledExpansionPanel(props) {
           <Typography className={classes.heading}>{props.title}</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails classes={{ root: classes.root }}>
-          <div>{props.annotation}</div>
+          <div className={className}>{annotationContent}</div>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>
