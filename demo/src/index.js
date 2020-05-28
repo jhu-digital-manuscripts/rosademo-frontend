@@ -5,15 +5,15 @@ const config = {
   id: 'demo',
   windows: [
     {
-      loadedManifest:
-        'https://rosetest.library.jhu.edu/rosademo/iiif/homer/VA/manifest',
-      canvasId:
-        'https://rosetest.library.jhu.edu/rosademo/iiif/homer/VA/VA035RN-0036/canvas',
+      loadedManifest: 'https://rosetest.library.jhu.edu/rosademo/iiif/homer/VA/manifest',
+      canvasId: 'https://rosetest.library.jhu.edu/rosademo/iiif/homer/VA/VA035RN-0036/canvas',
+      view: 'single'
     },
     {
-      loadedManifest:
-        'https://rosetest.library.jhu.edu/rosademo/iiif/rose/SeldenSupra57/manifest',
-    },
+      loadedManifest: 'https://rosetest.library.jhu.edu/rosademo/iiif/homer/VA/manifest',
+      canvasId: 'https://rosetest.library.jhu.edu/rosademo/iiif/homer/VA/VA012RN-0013/canvas',
+      view: 'single'
+    }
   ],
   window: {
     defaultView: 'single',
