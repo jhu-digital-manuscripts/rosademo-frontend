@@ -55,7 +55,12 @@ export default class AnnotationBody extends Component {
     if (body.purpose === 'tagging') {
       content = (
         <>
-          <Chip icon={<TagIcon />} label={body.value} color='secondary' />
+          <Chip
+            size='small'
+            icon={<TagIcon />}
+            label={body.value}
+            color='secondary'
+          />
         </>
       );
     } else if (body.purpose === 'commenting') {
