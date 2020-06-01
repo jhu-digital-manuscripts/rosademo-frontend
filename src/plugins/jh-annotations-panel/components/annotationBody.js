@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
 import StyledExpansionPanel from './styledExpansionPanel';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
+import { Chip } from '@material-ui/core';
+import TagIcon from '@material-ui/icons/LocalOfferTwoTone';
 
 /**
  * Render an annotation body. Specifics of how it is rendered may
@@ -53,10 +55,12 @@ export default class AnnotationBody extends Component {
     if (body.purpose === 'tagging') {
       content = (
         <>
-          <div>
-            <span style={{ fontStyle: 'italic' }}>Tag: </span>
-            <span>{body.value}</span>
-          </div>
+          <Chip
+            size='small'
+            icon={<TagIcon />}
+            label={body.value}
+            color='secondary'
+          />
         </>
       );
     } else if (body.purpose === 'commenting') {
