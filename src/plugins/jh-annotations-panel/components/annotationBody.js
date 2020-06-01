@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
-import StyledExpansionPanel from './styledExpansionPanel';
-import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Chip } from '@material-ui/core';
 import TagIcon from '@material-ui/icons/LocalOfferTwoTone';
+import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
+import React, { Component } from 'react';
+import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
+import StyledExpansionPanel from './styledExpansionPanel';
 
 /**
  * Render an annotation body. Specifics of how it is rendered may
@@ -54,14 +54,14 @@ export default class AnnotationBody extends Component {
 
     if (body.purpose === 'tagging') {
       content = (
-        <>
+        <div style={{ marginTop: '8px', marginBottom: '8px' }}>
           <Chip
             size='small'
             icon={<TagIcon />}
             label={body.value}
             color='secondary'
           />
-        </>
+        </div>
       );
     } else if (body.purpose === 'commenting') {
       content = (
@@ -84,6 +84,8 @@ export default class AnnotationBody extends Component {
       } else {
         markerText = 'unknown';
       }
+      let pleiadesAttribution =
+        '<a href=' + body.source + ' target="_blank">Pleiades</a>';
       content = (
         <div>
           <Map
@@ -94,16 +96,19 @@ export default class AnnotationBody extends Component {
             touchZoom={false}
           >
             <TileLayer
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              //attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
+            />
+            <TileLayer
+              className='pleiadesAttribution'
+              attribution={pleiadesAttribution}
+              url={body.source}
+              target='_blank'
             />
             <Marker position={coords}>
               <Popup autoPan={true}>{markerText}</Popup>
             </Marker>
           </Map>
-          <a href={body.source} target='_blank'>
-            View source externally
-          </a>
         </div>
       );
     } else if (body.type === 'TextualBody') {
