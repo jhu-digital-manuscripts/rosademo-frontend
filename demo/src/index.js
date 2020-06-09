@@ -19,16 +19,16 @@ const config = {
     defaultView: 'single',
     sideBarOpenByDefault: true,
   },
-  manifests: {
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/CoxMacro/manifest': {},
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Douce195/manifest': {},
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Douce332/manifest': {},
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/LudwigXV7/manifest': {},
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Morgan948/manifest': {},
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/SeldenSupra57/manifest': {},
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Walters143/manifest': {},
-    'https://rosetest.library.jhu.edu/rosademo/iiif/homer/VA/manifest': {},
-  },
+  catalog: [
+    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/CoxMacro/manifest',
+    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Douce195/manifest',
+    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Douce332/manifest',
+    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/LudwigXV7/manifest',
+    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Morgan948/manifest',
+    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/SeldenSupra57/manifest',
+    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Walters143/manifest',
+    'https://rosetest.library.jhu.edu/rosademo/iiif/homer/VA/manifest'
+  ],
   thumbnailNavigation: {
     defaultPosition: 'far-bottom',
   },
