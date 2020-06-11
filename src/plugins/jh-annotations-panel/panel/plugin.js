@@ -5,10 +5,11 @@ import { mapStateToProps, mapDispatchToProps } from './container';
  * Plugin definition used by Mirador
  */
 export default {
-  name: 'JHAnnotationsPanelPlugin',
-  target: 'WindowSideBarAnnotationPanel',
-  mode: 'wrap',
+  target: 'CustomPanel',
+  companionWindowKey: 'JH_ANNO_PANEL',
+  mode: 'add',
   component: JHAnnotationsPanel,
+  name: 'JHAnnotationsPanelPlugin',
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 };

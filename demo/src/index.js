@@ -1,5 +1,9 @@
 import Mirador from 'mirador';
-import { jhAnnotationFetchPlugin, jhAnnotationsPanelPlugin } from '../../src';
+import {
+  jhAnnotationFetchPlugin,
+  jhAnnotationsSidebar,
+  jhAnnotationsSidebarButton
+} from '../../src';
 
 const config = {
   id: 'demo',
@@ -20,14 +24,14 @@ const config = {
     sideBarOpenByDefault: true,
   },
   catalog: [
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/CoxMacro/manifest',
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Douce195/manifest',
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Douce332/manifest',
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/LudwigXV7/manifest',
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Morgan948/manifest',
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/SeldenSupra57/manifest',
-    'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Walters143/manifest',
-    'https://rosetest.library.jhu.edu/rosademo/iiif/homer/VA/manifest'
+    { manifestId: 'https://rosetest.library.jhu.edu/rosademo/iiif/rose/CoxMacro/manifest', provider: 'JHU' },
+    { manifestId: 'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Douce195/manifest', provider: 'JHU' },
+    { manifestId: 'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Douce332/manifest', provider: 'JHU' },
+    { manifestId: 'https://rosetest.library.jhu.edu/rosademo/iiif/rose/LudwigXV7/manifest', provider: 'JHU' },
+    { manifestId: 'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Morgan948/manifest', provider: 'JHU' },
+    { manifestId: 'https://rosetest.library.jhu.edu/rosademo/iiif/rose/SeldenSupra57/manifest', provider: 'JHU' },
+    { manifestId: 'https://rosetest.library.jhu.edu/rosademo/iiif/rose/Walters143/manifest', provider: 'JHU' },
+    { manifestId: 'https://rosetest.library.jhu.edu/rosademo/iiif/homer/VA/manifest', provider: 'Eldarion(??)' }
   ],
   thumbnailNavigation: {
     defaultPosition: 'far-bottom',
@@ -58,6 +62,10 @@ const config = {
   },
 };
 
-const plugins = [jhAnnotationFetchPlugin, jhAnnotationsPanelPlugin];
+const plugins = [
+  // jhAnnotationFetchPlugin,
+  jhAnnotationsSidebar,
+  jhAnnotationsSidebarButton
+];
 
 const miradorInstance = Mirador.viewer(config, plugins);

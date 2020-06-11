@@ -18,8 +18,8 @@ export default class JHAnnotationsPanel extends Component {
    * Returns the rendered component
    */
   render() {
-    const { classes, t, windowId, id } = this.props.targetProps;
-
+    const { classes, t, windowId, id } = this.props;
+debugger
     const {
       selectedCanvases,
       presentAnnotations,

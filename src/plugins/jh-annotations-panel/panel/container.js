@@ -7,9 +7,8 @@ import {
 } from './selectors';
 
 export const mapStateToProps = (state, props) => {
-  const selectedCanvases = getVisibleCanvases(state, {
-    windowId: props.targetProps.windowId,
-  });
+  const { windowId } = props;
+  const selectedCanvases = getVisibleCanvases(state, { windowId });
 
   const presentAnnotations = getAnnotationsForVisibleCanvases(
     state,
@@ -27,7 +26,7 @@ export const mapStateToProps = (state, props) => {
   return {
     annotationCount: getAnnotationResourcesByMotivation(state, {
       motivations: ['oa:commenting', 'sc:painting', 'commenting'],
-      windowId: props.targetProps.windowId,
+      windowId
     }).length,
     selectedCanvases,
     presentAnnotations,

@@ -31,6 +31,7 @@ export default class JHAnnotationFetcher extends Component {
   }
 
   render() {
+    debugger
     const { TargetComponent, targetProps } = this.props;
     return <TargetComponent {...targetProps}></TargetComponent>;
   }
