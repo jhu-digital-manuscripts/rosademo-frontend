@@ -12,7 +12,7 @@ import { receiveAnnotation } from 'mirador/dist/es/src/state/actions/annotation'
  * canvases: mirador.selectors.getVisibleCanvases
  */
 export function mapStateToProps(state, props) {
-  const { windowId } = props;
+  const { windowId } = props.targetProps;
 
   return {
     canvases: getVisibleCanvases(state, { windowId }),

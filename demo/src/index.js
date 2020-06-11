@@ -63,7 +63,7 @@ const config = {
 };
 
 const plugins = [
-  // jhAnnotationFetchPlugin,
+  jhAnnotationFetchPlugin,
   jhAnnotationsSidebar,
   jhAnnotationsSidebarButton
 ];
