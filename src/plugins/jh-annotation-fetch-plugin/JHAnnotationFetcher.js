@@ -21,7 +21,7 @@ export default class JHAnnotationFetcher extends Component {
 
   componentDidUpdate(prevProps) {
     const { canvases } = this.props;
-debugger
+
     const currentCanvasIds = canvases.map((canvas) => canvas.id);
     const prevCanvasIds = prevProps.canvases.map((canvas) => canvas.id);
 

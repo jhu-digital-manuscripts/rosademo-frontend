@@ -22,7 +22,7 @@ export const mapStateToProps = (state, props) => {
   );
 
   const annoOfAnno = mapAnnoOfAnno(state, presentAnnotations);
-debugger
+
   return {
     annotationCount: getAnnotationResourcesByMotivation(state, {
       motivations: ['oa:commenting', 'sc:painting', 'commenting'],
