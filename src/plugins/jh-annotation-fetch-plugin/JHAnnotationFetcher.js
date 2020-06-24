@@ -10,9 +10,9 @@ export default class JHAnnotationFetcher extends Component {
   }
 
   fetchAnnotations() {
-    const { canvases, receiveAnnotation } = this.props;
+    const { canvases, manifest, receiveAnnotation } = this.props;
     getRosaWebAnnotations(canvases, receiveAnnotation);
-    getEldarionAnnotations(canvases, receiveAnnotation);
+    getEldarionAnnotations(canvases, receiveAnnotation, manifest);
   }
 
   componentDidMount() {
