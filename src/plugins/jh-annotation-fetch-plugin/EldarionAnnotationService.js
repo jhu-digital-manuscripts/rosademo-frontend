@@ -30,7 +30,15 @@ export function getEldarionAnnotations(canvases, receiveAnnotation, manifest) {
      * New section will try a known URL to reach the trial discovery service in order to
      * get annotation endpoints
      */
-    const discoveryUrl = getEDS(manifest) || 'https://aniop-atlas-staging.eldarion.com/wa/discovery/';
+    const discoveryUrl = getEDS(manifest);
+
+    /**
+     * Don't do anything if no discovery service was found
+     */
+    if (!discoveryUrl) {
+      return;
+    }
+
     const target = `${discoveryUrl}?canvas_id=${canvasId}`;
 
     fetch(target, { method: 'GET' })
@@ -76,13 +84,17 @@ function getEDS(manifest) {
     return;
   }
   
-  const services = manifest.service;
+  let services = manifest.service;
 
   if (!Array.isArray(services)) {
     services = [services];
   }
 
-  return services.find(service => service?.profile === _EDS_PROFILE_URL);
+  const match = services.find(service => service?.profile === _EDS_PROFILE_URL);
+
+  if (match) {
+    return match['@id'];
+  }
 }
 
 /**
