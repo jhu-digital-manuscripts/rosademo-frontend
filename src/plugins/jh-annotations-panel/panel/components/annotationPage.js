@@ -45,7 +45,7 @@ export default class AnnotationPage extends Component {
     return (
       <>
         <Box pl='8px' pb='16px'>
-          <Typography className={classes.sectionHeading} variant='overline'>
+          <Typography className={classes?.sectionHeading} variant='overline'>
             {canvasLabel}
           </Typography>
         </Box>

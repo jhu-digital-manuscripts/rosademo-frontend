@@ -18,7 +18,7 @@ export default class JHAnnotationsPanel extends Component {
    * Returns the rendered component
    */
   render() {
-    const { classes, t, windowId, id } = this.props.targetProps;
+    const { classes, t, windowId, id } = this.props;
 
     const {
       selectedCanvases,
@@ -70,7 +70,7 @@ export default class JHAnnotationsPanel extends Component {
             id={id}
             titleControls={<AnnotationSettings windowId={windowId} />}
           >
-            <div className={classes.section}>
+            <div className={classes?.section}>
               <Typography component='p' variant='subtitle2'>
                 {t('showingNumAnnotations', {
                   number: Object.values(annoOfAnno).length,
