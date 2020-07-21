@@ -70,7 +70,7 @@ export default class JHAnnotationsPanel extends Component {
             id={id}
             titleControls={<AnnotationSettings windowId={windowId} />}
           >
-            <div className={classes?.section}>
+            <div className={classes?.section} style={{ padding: '16px' }}>
               <Typography component='p' variant='subtitle2'>
                 {t('showingNumAnnotations', {
                   number: Object.values(annoOfAnno).length,
