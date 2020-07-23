@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AnnotationBody from './annotationBody';
-import StyledExpansionPanel from './styledExpansionPanel';
+import StyledAccordion from './styledAccordion';
 
 /**
  * Should display an annotation, possibly decorated by other annotations
@@ -79,12 +79,12 @@ export default class Annotation extends Component {
     const isTargeted = Array.isArray(targetedBy) && targetedBy.length > 0;
     if (isTargeted) {
       targetedAnnotations = (
-        <StyledExpansionPanel
+        <StyledAccordion
           title='Named Entities'
           annotation={targetedBy.map((anno) => (
             <Annotation annotation={anno.json} key={anno.json.id} />
           ))}
-        ></StyledExpansionPanel>
+        ></StyledAccordion>
       );
     } else {
       targetedAnnotations = <></>;
