@@ -1,12 +1,21 @@
+const path = require('path');
 module.exports = {
   type: 'react-app',
   webpack: {
-    copy: [
-      { from: 'public/' }
-    ],
+    aliases: {
+      '@material-ui/core': path.resolve('./node_modules', '@material-ui/core'),
+      '@material-ui/styles': path.resolve(
+        './',
+        'node_modules',
+        '@material-ui/styles'
+      ),
+      react: path.resolve('./', 'node_modules', 'react'),
+      'react-dom': path.resolve('./', 'node_modules', 'react-dom'),
+    },
+    copy: [{ from: 'public/' }],
     html: {
       template: 'demo/src/index.html',
-      favicon: 'demo/src/favicon.ico'
-    }
-  }
-}
+      favicon: 'demo/src/favicon.ico',
+    },
+  },
+};

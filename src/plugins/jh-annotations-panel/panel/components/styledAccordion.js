@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
 import {
-  ExpansionPanelSummary,
+  AccordionSummary,
   withStyles,
-  ExpansionPanel,
-  ExpansionPanelDetails,
+  Accordion,
+  AccordionDetails,
   Typography,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -29,7 +29,7 @@ const styles = (theme) => ({
   expanded: { color: '#3F51B5' },
 });
 
-function StyledExpansionPanel(props) {
+function StyledAccordion(props) {
   const { classes } = props;
   let className;
   let annotationContent;
@@ -49,7 +49,7 @@ function StyledExpansionPanel(props) {
   }
   return (
     <div className={classes.root}>
-      <ExpansionPanel
+      <Accordion
         square={true}
         style={{
           WebkitBoxShadow: 'none',
@@ -57,7 +57,7 @@ function StyledExpansionPanel(props) {
           boxShadow: 'none',
         }}
       >
-        <ExpansionPanelSummary
+        <AccordionSummary
           classes={{
             root: classes.root,
             content: classes.content,
@@ -66,17 +66,17 @@ function StyledExpansionPanel(props) {
           expandIcon={<ExpandMoreIcon />}
         >
           <Typography className={classes.heading}>{props.title}</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails classes={{ root: classes.root }}>
+        </AccordionSummary>
+        <AccordionDetails classes={{ root: classes.root }}>
           <div className={className}>{annotationContent}</div>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+        </AccordionDetails>
+      </Accordion>
     </div>
   );
 }
 
-StyledExpansionPanel.propTypes = {
+StyledAccordion.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(StyledExpansionPanel);
+export default withStyles(styles)(StyledAccordion);

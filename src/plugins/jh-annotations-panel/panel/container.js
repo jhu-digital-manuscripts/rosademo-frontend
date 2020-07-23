@@ -26,7 +26,7 @@ export const mapStateToProps = (state, props) => {
   return {
     annotationCount: getAnnotationResourcesByMotivation(state, {
       motivations: ['oa:commenting', 'sc:painting', 'commenting'],
-      windowId
+      windowId,
     }).length,
     selectedCanvases,
     presentAnnotations,

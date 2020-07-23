@@ -3,7 +3,7 @@ import TagIcon from '@material-ui/icons/LocalOfferTwoTone';
 import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
 import React, { Component } from 'react';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
-import StyledExpansionPanel from './styledExpansionPanel';
+import StyledAccordion from './styledAccordion';
 
 /**
  * Render an annotation body. Specifics of how it is rendered may
@@ -114,10 +114,10 @@ export default class AnnotationBody extends Component {
     } else if (body.type === 'TextualBody') {
       if (body.language === 'en') {
         content = (
-          <StyledExpansionPanel
+          <StyledAccordion
             title='Translation'
             annotation={body.value}
-          ></StyledExpansionPanel>
+          ></StyledAccordion>
         );
       } else if (body.language) {
         content = (

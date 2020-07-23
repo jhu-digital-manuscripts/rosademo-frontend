@@ -1,5 +1,7 @@
-import { getVisibleCanvases } from 'mirador/dist/es/src/state/selectors/canvases';
-import { getManifest } from 'mirador/dist/es/src/state/selectors/manifests';
+import {
+  getManifest,
+  getVisibleCanvases,
+} from 'mirador/dist/es/src/state/selectors';
 import { receiveAnnotation } from 'mirador/dist/es/src/state/actions/annotation';
 
 /*
@@ -17,7 +19,7 @@ export function mapStateToProps(state, props) {
   return {
     canvases: getVisibleCanvases(state, { windowId }),
     config: state.config,
-    manifest: getManifest(state, { windowId })?.json
+    manifest: getManifest(state, { windowId })?.json,
   };
 }
 
