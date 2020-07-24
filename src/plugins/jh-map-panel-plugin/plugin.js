@@ -1,4 +1,5 @@
 import JHMapPanel from './jh-map-panel';
+import { mapStateToProps, mapDispatchToProps } from './container';
 
 export default {
   target: 'CompanionWindow',
