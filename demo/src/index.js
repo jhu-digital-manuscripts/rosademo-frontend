@@ -1,9 +1,5 @@
 import Mirador from 'mirador';
-import {
-  jhAnnotationFetchPlugin,
-  jhAnnotationsSidebar,
-  jhAnnotationsSidebarButton,
-} from '../../src';
+import jhPlugins from '../../src';
 
 const config = {
   id: 'demo',
@@ -102,14 +98,9 @@ const config = {
   translations: {
     en: {
       openCompanionWindow_JH_ANNO_PANEL: 'Annotations',
+      openCompanionWindow_JH_MAP_PANEL: 'Maps',
     },
   },
 };
 
-const plugins = [
-  jhAnnotationFetchPlugin,
-  jhAnnotationsSidebar,
-  jhAnnotationsSidebarButton,
-];
-
-const miradorInstance = Mirador.viewer(config, plugins);
+const miradorInstance = Mirador.viewer(config, jhPlugins);
