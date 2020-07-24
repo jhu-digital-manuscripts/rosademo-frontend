@@ -7,4 +7,6 @@ export default {
   mode: 'add',
   component: JHMapPanel,
   name: 'JHMapPanelPlugin',
+  mapStateToProps,
+  mapDispatchToProps,
 };
