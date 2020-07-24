@@ -9,7 +9,7 @@ export default class JHMapPanel extends Component {
 
     return (
       <CompanionWindow
-        title='map'
+        title='Locations'
         paperClassName={ns('window-sidebar-map-panel')}
         windowId={windowId}
         id={id}

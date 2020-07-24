@@ -98,7 +98,7 @@ const config = {
   translations: {
     en: {
       openCompanionWindow_JH_ANNO_PANEL: 'Annotations',
-      openCompanionWindow_JH_MAP_PANEL: 'Maps',
+      openCompanionWindow_JH_MAP_PANEL: 'Locations',
     },
   },
 };

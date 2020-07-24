@@ -1,8 +1,10 @@
 import React from 'react';
-import MapIcon from '@material-ui/icons/Map';
-import MapOutlinedIcon from '@material-ui/icons/MapOutlined';
+import Icon from '@mdi/react';
+import { mdiMapMarkerMultiple } from '@mdi/js';
 
-const MapSidebarButton = () => <MapIcon />;
+const MapSidebarButton = () => (
+  <Icon path={mdiMapMarkerMultiple} size={1}></Icon>
+);
 MapSidebarButton.value = 'JH_MAP_PANEL';
 
 export default {
