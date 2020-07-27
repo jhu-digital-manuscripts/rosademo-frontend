@@ -42,6 +42,17 @@ MapDialog.propTypes = {
   open: PropTypes.bool.isRequired,
 };
 
+/**
+ * - annotations: (array) a list of annotation JSON objects
+ * - selectedAnnotation: (string) ID of a georeference annotation that has been selected
+ *      by the user to be highlighted on the map
+ * - selectGeorefAnnotation: (function) an action that can be invoked if a user selects a
+ *      georeference annotation from this component to be highlighted on the map
+ *      Takes one string argument, the ID of the selected annotation
+ *      Can be called with zero arguments to "deselect" the currently selected annotation
+ *
+ * @param {object} props 
+ */
 export default function JHMapPanel(props) {
   const [open, setOpen] = React.useState(false);
 
@@ -53,7 +64,7 @@ export default function JHMapPanel(props) {
     setOpen(false);
   };
 
-  const { annotations, selectGeorefAnnotation, windowId, id } = props;
+  const { annotations, selectedAnnotation, selectGeorefAnnotation, windowId, id } = props;
 
   return (
     <CompanionWindow
