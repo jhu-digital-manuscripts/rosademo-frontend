@@ -53,7 +53,7 @@ export default function JHMapPanel(props) {
     setOpen(false);
   };
 
-  const { classes, windowId, id } = props;
+  const { annotations, windowId, id } = props;
 
   return (
     <CompanionWindow
@@ -95,3 +95,9 @@ export default function JHMapPanel(props) {
     </CompanionWindow>
   );
 }
+
+JHMapPanel.propTypes = {
+  annotations: PropTypes.array.isRequired,
+  windowId: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired
+};
