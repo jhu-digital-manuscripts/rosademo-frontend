@@ -1,5 +1,9 @@
 import JHMapPanel from './jh-map-panel';
-import { mapStateToProps, mapDispatchToProps } from './container';
+import {
+  mapDispatchToProps,
+  mapStateToProps,
+  georefAnnotationSelectedReducer
+} from './container';
 
 export default {
   target: 'CompanionWindow',
@@ -9,4 +13,7 @@ export default {
   name: 'JHMapPanelPlugin',
   mapStateToProps,
   mapDispatchToProps,
+  reducers: {
+    jhMapPanel: georefAnnotationSelectedReducer
+  }
 };

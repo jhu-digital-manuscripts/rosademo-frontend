@@ -53,7 +53,7 @@ export default function JHMapPanel(props) {
     setOpen(false);
   };
 
-  const { annotations, windowId, id } = props;
+  const { annotations, selectGeorefAnnotation, windowId, id } = props;
 
   return (
     <CompanionWindow
@@ -98,6 +98,7 @@ export default function JHMapPanel(props) {
 
 JHMapPanel.propTypes = {
   annotations: PropTypes.array.isRequired,
+  georefAnnotationSelected: PropTypes.func.isRequired,
   windowId: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired
 };
