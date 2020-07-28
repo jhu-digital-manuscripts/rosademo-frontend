@@ -51,7 +51,6 @@ function getGeorefMapData(annotation) {
     return fetch(georefUrl, { method: 'GET' })
       .then((result) => result.json())
       .then((data) => {
-        console.log('pleiades data: ', data);
         return {
           coords: data.reprPoint?.reverse(),
           features: data.features,
@@ -78,7 +77,7 @@ function getGeorefMapData(annotation) {
  */
 export default function JHMapPanel(props) {
   const [open, setOpen] = React.useState(false);
-  const [coordinates, setCoords] = React.useState(false);
+  const [locations, setLocations] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -97,8 +96,15 @@ export default function JHMapPanel(props) {
   } = props;
 
   annotations.forEach(async (annotation) => {
-    const locationData = await getGeorefMapData(annotation);
-    console.log(locationData);
+    if (!locations[annotation.id]) {
+      const locationData = await getGeorefMapData(annotation);
+      setLocations({
+        ...locations,
+        [annotation.id]: locationData,
+      });
+      debugger;
+    }
+    //return locationData;
   });
 
   return (
