@@ -4,6 +4,7 @@ import CompanionWindow from 'mirador/dist/es/src/containers/CompanionWindow';
 import ns from 'mirador/dist/es/src/config/css-ns';
 import { Button, Dialog, DialogTitle, DialogContent } from '@material-ui/core';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
+import { property } from 'lodash';
 
 function MapDialog(props) {
   const { onClose, open } = props;
@@ -42,6 +43,28 @@ MapDialog.propTypes = {
   open: PropTypes.bool.isRequired,
 };
 
+function getGeorefMapData(annotation) {
+  const body = annotation.body.filter((body) => body.purpose === 'identifying');
+  let georefUrl;
+  if (body[0]?.source?.includes('pleiades')) {
+    georefUrl = body[0]?.source + '/json';
+    return fetch(georefUrl, { method: 'GET' })
+      .then((result) => result.json())
+      .then((data) => {
+        console.log('pleiades data: ', data);
+        return {
+          coords: data.reprPoint?.reverse(),
+          features: data.features,
+          title: data.title,
+          details: data.details,
+        };
+      })
+      .catch((error) => {
+        console.log('Error fetching map data', error);
+      });
+  }
+}
+
 /**
  * - annotations: (array) a list of annotation JSON objects
  * - selectedAnnotation: (string) ID of a georeference annotation that has been selected
@@ -51,10 +74,11 @@ MapDialog.propTypes = {
  *      Takes one string argument, the ID of the selected annotation
  *      Can be called with zero arguments to "deselect" the currently selected annotation
  *
- * @param {object} props 
+ * @param {object} props
  */
 export default function JHMapPanel(props) {
   const [open, setOpen] = React.useState(false);
+  const [coordinates, setCoords] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -64,7 +88,18 @@ export default function JHMapPanel(props) {
     setOpen(false);
   };
 
-  const { annotations, selectedAnnotation, selectGeorefAnnotation, windowId, id } = props;
+  const {
+    annotations,
+    selectedAnnotation,
+    selectGeorefAnnotation,
+    windowId,
+    id,
+  } = props;
+
+  annotations.forEach(async (annotation) => {
+    const locationData = await getGeorefMapData(annotation);
+    console.log(locationData);
+  });
 
   return (
     <CompanionWindow
@@ -109,7 +144,8 @@ export default function JHMapPanel(props) {
 
 JHMapPanel.propTypes = {
   annotations: PropTypes.array.isRequired,
-  georefAnnotationSelected: PropTypes.func.isRequired,
+  selectedAnnotation: PropTypes.string,
+  selectGeorefAnnotation: PropTypes.func.isRequired,
   windowId: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired
+  id: PropTypes.string.isRequired,
 };

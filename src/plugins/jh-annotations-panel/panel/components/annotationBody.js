@@ -21,30 +21,6 @@ import StyledAccordion from './styledAccordion';
 export default class AnnotationBody extends Component {
   constructor(props) {
     super(props);
-    this.state = { georef: Object, position: ['', ''] };
-    this.getGeorefMapData = this.getGeorefMapData.bind(this);
-  }
-
-  componentDidMount() {
-    const { body } = this.props;
-    let georefUrl;
-    if (body.purpose === 'identifying') {
-      if (body.source != undefined && body.source.includes('pleiades')) {
-        georefUrl = body.source + '/json';
-        this.getGeorefMapData(georefUrl);
-      }
-    }
-  }
-
-  getGeorefMapData(georefUrl) {
-    fetch(georefUrl, { method: 'GET' })
-      .then((result) => result.json())
-      .then((data) => {
-        this.setState({ georef: data, position: data.reprPoint });
-      })
-      .catch((error) => {
-        console.log('Error fetching map data', error);
-      });
   }
 
   render() {
@@ -72,46 +48,48 @@ export default class AnnotationBody extends Component {
           </div>
         </>
       );
-    } else if (
-      body.purpose === 'identifying' &&
-      this.state.georef.reprPoint !== undefined
-    ) {
-      let coords = this.state.georef.reprPoint?.reverse();
-      let mapProps = this.state.georef.features[0];
-      let markerText;
-      if (mapProps?.properties?.snippet !== undefined) {
-        markerText = mapProps?.properties?.snippet;
-      } else {
-        markerText = 'unknown';
-      }
-      let pleiadesAttribution =
-        '<a href=' + body.source + ' target="_blank">Pleiades</a>';
-      content = (
-        <div>
-          <Map
-            center={coords}
-            zoom={5}
-            style={{ height: '250px' }}
-            scrollWheelZoom={false}
-            touchZoom={false}
-          >
-            <TileLayer
-              //attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
-            />
-            <TileLayer
-              className='pleiadesAttribution'
-              attribution={pleiadesAttribution}
-              url={body.source}
-              target='_blank'
-            />
-            <Marker position={coords}>
-              <Popup autoPan={true}>{markerText}</Popup>
-            </Marker>
-          </Map>
-        </div>
-      );
-    } else if (body.type === 'TextualBody') {
+    }
+    // else if (
+    //   body.purpose === 'identifying' &&
+    //   this.state.georef.reprPoint !== undefined
+    // ) {
+    //   let coords = this.state.georef.reprPoint?.reverse();
+    //   let mapProps = this.state.georef.features[0];
+    //   let markerText;
+    //   if (mapProps?.properties?.snippet !== undefined) {
+    //     markerText = mapProps?.properties?.snippet;
+    //   } else {
+    //     markerText = 'unknown';
+    //   }
+    //   let pleiadesAttribution =
+    //     '<a href=' + body.source + ' target="_blank">Pleiades</a>';
+    //   content = (
+    //     <div>
+    //       <Map
+    //         center={coords}
+    //         zoom={5}
+    //         style={{ height: '250px' }}
+    //         scrollWheelZoom={false}
+    //         touchZoom={false}
+    //       >
+    //         <TileLayer
+    //           //attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    //           url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
+    //         />
+    //         <TileLayer
+    //           className='pleiadesAttribution'
+    //           attribution={pleiadesAttribution}
+    //           url={body.source}
+    //           target='_blank'
+    //         />
+    //         <Marker position={coords}>
+    //           <Popup autoPan={true}>{markerText}</Popup>
+    //         </Marker>
+    //       </Map>
+    //     </div>
+    //   );
+    // }
+    else if (body.type === 'TextualBody') {
       if (body.language === 'en') {
         content = (
           <StyledAccordion
