@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import CompanionWindow from 'mirador/dist/es/src/containers/CompanionWindow';
 import ns from 'mirador/dist/es/src/config/css-ns';
 import { Button, Dialog, DialogTitle, DialogContent } from '@material-ui/core';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
-import { property } from 'lodash';
 
 function MapDialog(props) {
   const { onClose, open } = props;
@@ -52,6 +51,7 @@ function getGeorefMapData(annotation) {
       .then((result) => result.json())
       .then((data) => {
         return {
+          annotationId: annotation.id,
           coords: data.reprPoint?.reverse(),
           features: data.features,
           title: data.title,
@@ -61,6 +61,10 @@ function getGeorefMapData(annotation) {
       .catch((error) => {
         console.log('Error fetching map data', error);
       });
+  }
+
+  return {
+    annotationId: annotation.id
   }
 }
 
@@ -76,8 +80,9 @@ function getGeorefMapData(annotation) {
  * @param {object} props
  */
 export default function JHMapPanel(props) {
-  const [open, setOpen] = React.useState(false);
-  const [locations, setLocations] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [locations, setLocations] = useState({});
+  const [pending, setPending] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -95,17 +100,33 @@ export default function JHMapPanel(props) {
     id,
   } = props;
 
-  annotations.forEach(async (annotation) => {
-    if (!locations[annotation.id]) {
-      const locationData = await getGeorefMapData(annotation);
-      setLocations({
-        ...locations,
-        [annotation.id]: locationData,
-      });
-      debugger;
+  // console.log('locations: ', locations);
+
+  useEffect(() => {
+    if (pending) {
+      return;
     }
-    //return locationData;
-  });
+
+    // console.log('Annotations resolved: ', annotations.filter(annotation => locations[annotation.id]));
+    // console.log('Annotations NOT resolved: ', annotations.filter(annotation => !locations[annotation.id]));
+    Promise.all(annotations.filter(annotation => !locations[annotation.id])
+      .map(async (annotation) => {
+        if (!locations[annotation.id]) {
+          return getGeorefMapData(annotation);
+        }
+      })).then((data) => {
+        // console.log('Pleiades data: ', data);
+        const mapData = {};
+        data.filter(result => !!result).forEach((pleiadesData) => Object.assign(mapData, {
+          [pleiadesData.annotationId]: pleiadesData
+        }));
+
+        setPending(false);
+        setLocations(Object.assign({}, locations, mapData));
+      });
+
+      setPending(true);
+  }, [annotations]);
 
   return (
     <CompanionWindow
