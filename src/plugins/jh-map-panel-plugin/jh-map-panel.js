@@ -6,7 +6,7 @@ import { Button, Dialog, DialogTitle, DialogContent } from '@material-ui/core';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 
 function MapDialog(props) {
-  const { onClose, open } = props;
+  const { onClose, open, locations } = props;
 
   const handleClose = () => {
     onClose();
@@ -24,6 +24,8 @@ function MapDialog(props) {
       <DialogContent>
         <Map
           scrollWheelZoom={false}
+          center={Object.values(locations)[0]?.coords}
+          zoom={8}
           touchZoom={false}
           style={{ height: '750px' }}
         >
@@ -31,6 +33,15 @@ function MapDialog(props) {
             //attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
           />
+          {Object.values(locations)
+            .filter((location) => location.coords !== undefined)
+            .map((element) => {
+              return (
+                <Marker position={element.coords}>
+                  <Popup autoPan={true}>{element.title}</Popup>
+                </Marker>
+              );
+            })}
         </Map>
       </DialogContent>
     </Dialog>
@@ -181,7 +192,7 @@ export default function JHMapPanel(props) {
         >
           Enlarge Map
         </Button>
-        <MapDialog open={open} onClose={handleClose} />
+        <MapDialog open={open} onClose={handleClose} locations={locations} />
       </div>
     </CompanionWindow>
   );
