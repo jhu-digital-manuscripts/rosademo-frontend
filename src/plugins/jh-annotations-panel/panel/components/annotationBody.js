@@ -2,7 +2,6 @@ import { Chip } from '@material-ui/core';
 import TagIcon from '@material-ui/icons/LocalOfferTwoTone';
 import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
 import React, { Component } from 'react';
-import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 import StyledAccordion from './styledAccordion';
 
 /**
@@ -29,25 +28,25 @@ export default class AnnotationBody extends Component {
     let content;
 
     if (body.purpose === 'tagging') {
-      content = (
-        <div style={{ marginTop: '8px', marginBottom: '8px' }}>
-          <Chip
-            size='small'
-            icon={<TagIcon />}
-            label={body.value}
-            color='secondary'
-          />
-        </div>
-      );
+      // content = (
+      //   <div style={{ marginTop: '8px', marginBottom: '8px' }}>
+      //     <Chip
+      //       size='small'
+      //       icon={<TagIcon />}
+      //       label={body.value}
+      //       color='secondary'
+      //     />
+      //   </div>
+      // );
     } else if (body.purpose === 'commenting') {
-      content = (
-        <>
-          <div>
-            <span style={{ fontStyle: 'italic' }}>Comment: </span>
-            <span>{body.value}</span>
-          </div>
-        </>
-      );
+      // content = (
+      //   <>
+      //     <div>
+      //       <span style={{ fontStyle: 'italic' }}>Comment: </span>
+      //       <span>{body.value}</span>
+      //     </div>
+      //   </>
+      // );
     } else if (body.type === 'TextualBody') {
       if (body.language === 'en') {
         content = (

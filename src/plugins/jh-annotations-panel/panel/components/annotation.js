@@ -16,7 +16,7 @@ import StyledAccordion from './styledAccordion';
 export default class Annotation extends Component {
   _label(annotation) {
     if (annotation.label) {
-      return <div className='annotation-label'>{annotation.label}</div>;
+      // return <div className='annotation-label'>{annotation.label}</div>;
     }
 
     return <></>;
@@ -24,26 +24,26 @@ export default class Annotation extends Component {
 
   _creator(annotation) {
     let creator;
-    if (annotation.creator) {
-      if (typeof annotation.creator === 'string') {
-        creator = (
-          <>
-            <span style={{ fontStyle: 'italic' }}>Creator: </span>
-            <a href={annotation.creator} target='_blank'>
-              {annotation.creator}
-            </a>
-          </>
-        );
-      } else if (typeof annotation.creator === 'object') {
-        creator = (
-          <a href={annotation.creator.id} target='_blank'>
-            {annotation.creator.name}
-          </a>
-        );
-      }
-    } else {
-      creator = <></>;
-    }
+    // if (annotation.creator) {
+    //   if (typeof annotation.creator === 'string') {
+    //     creator = (
+    //       <>
+    //         <span style={{ fontStyle: 'italic' }}>Creator: </span>
+    //         <a href={annotation.creator} target='_blank'>
+    //           {annotation.creator}
+    //         </a>
+    //       </>
+    //     );
+    //   } else if (typeof annotation.creator === 'object') {
+    //     creator = (
+    //       <a href={annotation.creator.id} target='_blank'>
+    //         {annotation.creator.name}
+    //       </a>
+    //     );
+    //   }
+    // } else {
+    //   creator = <></>;
+    // }
 
     return creator;
   }
