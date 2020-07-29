@@ -2,7 +2,13 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import CompanionWindow from 'mirador/dist/es/src/containers/CompanionWindow';
 import ns from 'mirador/dist/es/src/config/css-ns';
-import { Button, Dialog, DialogTitle, DialogContent } from '@material-ui/core';
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Typography,
+} from '@material-ui/core';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 
 function MapDialog(props) {
@@ -194,6 +200,9 @@ export default function JHMapPanel(props) {
         </Button>
         <MapDialog open={open} onClose={handleClose} locations={locations} />
       </div>
+      <Typography component='p'>
+        {Object.values(locations).length} locations
+      </Typography>
     </CompanionWindow>
   );
 }
