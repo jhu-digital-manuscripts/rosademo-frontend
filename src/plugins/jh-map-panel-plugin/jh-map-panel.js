@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import CompanionWindow from 'mirador/dist/es/src/containers/CompanionWindow';
 import ns from 'mirador/dist/es/src/config/css-ns';
+import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
 import {
   Button,
   Dialog,
@@ -200,9 +201,28 @@ export default function JHMapPanel(props) {
         </Button>
         <MapDialog open={open} onClose={handleClose} locations={locations} />
       </div>
-      <Typography component='p'>
-        {Object.values(locations).length} locations
-      </Typography>
+      <div style={{ padding: '8px' }}>
+        <Typography>{Object.values(locations).length} locations:</Typography>
+      </div>
+      <div style={{ padding: '8px' }}>
+        {Object.values(locations)
+          .filter((loc) => loc.details !== undefined)
+          .map((location) => {
+            console.log(location);
+            return (
+              <Typography>
+                <div style={{ fontStyle: 'italic', fontSize: '18px' }}>
+                  {location.title}
+                </div>
+                <SanitizedHtml
+                  ruleSet='mirador2'
+                  htmlString={location.details}
+                  className='transcription'
+                />
+              </Typography>
+            );
+          })}
+      </div>
     </CompanionWindow>
   );
 }

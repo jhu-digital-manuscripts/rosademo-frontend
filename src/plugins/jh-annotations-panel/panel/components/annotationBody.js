@@ -1,5 +1,3 @@
-import { Chip } from '@material-ui/core';
-import TagIcon from '@material-ui/icons/LocalOfferTwoTone';
 import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
 import React, { Component } from 'react';
 import StyledAccordion from './styledAccordion';
