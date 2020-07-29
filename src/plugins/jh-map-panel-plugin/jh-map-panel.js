@@ -64,8 +64,8 @@ function getGeorefMapData(annotation) {
   }
 
   return {
-    annotationId: annotation.id
-  }
+    annotationId: annotation.id,
+  };
 }
 
 /**
@@ -109,23 +109,30 @@ export default function JHMapPanel(props) {
 
     // console.log('Annotations resolved: ', annotations.filter(annotation => locations[annotation.id]));
     // console.log('Annotations NOT resolved: ', annotations.filter(annotation => !locations[annotation.id]));
-    Promise.all(annotations.filter(annotation => !locations[annotation.id])
-      .map(async (annotation) => {
-        if (!locations[annotation.id]) {
-          return getGeorefMapData(annotation);
-        }
-      })).then((data) => {
-        // console.log('Pleiades data: ', data);
-        const mapData = {};
-        data.filter(result => !!result).forEach((pleiadesData) => Object.assign(mapData, {
-          [pleiadesData.annotationId]: pleiadesData
-        }));
+    Promise.all(
+      annotations
+        .filter((annotation) => !locations[annotation.id])
+        .map(async (annotation) => {
+          if (!locations[annotation.id]) {
+            return getGeorefMapData(annotation);
+          }
+        })
+    ).then((data) => {
+      // console.log('Pleiades data: ', data);
+      const mapData = {};
+      data
+        .filter((result) => !!result)
+        .forEach((pleiadesData) =>
+          Object.assign(mapData, {
+            [pleiadesData.annotationId]: pleiadesData,
+          })
+        );
 
-        setPending(false);
-        setLocations(Object.assign({}, locations, mapData));
-      });
+      setPending(false);
+      setLocations(Object.assign({}, locations, mapData));
+    });
 
-      setPending(true);
+    setPending(true);
   }, [annotations]);
 
   return (
@@ -138,6 +145,8 @@ export default function JHMapPanel(props) {
       <div>
         <Map
           scrollWheelZoom={false}
+          center={Object.values(locations)[0]?.coords}
+          zoom={6}
           touchZoom={false}
           style={{ height: '250px' }}
         >
@@ -145,6 +154,15 @@ export default function JHMapPanel(props) {
             //attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
           />
+          {Object.values(locations)
+            .filter((location) => location.coords !== undefined)
+            .map((element) => {
+              return (
+                <Marker position={element.coords}>
+                  <Popup autoPan={true}>{element.title}</Popup>
+                </Marker>
+              );
+            })}
         </Map>
       </div>
       <div
