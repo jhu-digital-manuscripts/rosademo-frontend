@@ -210,16 +210,29 @@ export default function JHMapPanel(props) {
           .map((location) => {
             console.log(location);
             return (
-              <Typography>
-                <div style={{ fontStyle: 'italic', fontSize: '18px' }}>
-                  {location.title}
+              <>
+                <div
+                  style={{
+                    fontStyle: 'italic',
+                    fontSize: '18px',
+                    marginTop: '16px',
+                  }}
+                >
+                  <Typography>{location.title}</Typography>
                 </div>
-                <SanitizedHtml
-                  ruleSet='mirador2'
-                  htmlString={location.details}
-                  className='transcription'
-                />
-              </Typography>
+                <div id='locationDetailsContent'>
+                  <Typography component='span' variant='subtitle2'>
+                    <span>Description: </span>
+                  </Typography>
+                  <Typography>
+                    <SanitizedHtml
+                      ruleSet='mirador2'
+                      htmlString={location.details}
+                      className='transcription'
+                    />
+                  </Typography>
+                </div>
+              </>
             );
           })}
       </div>
