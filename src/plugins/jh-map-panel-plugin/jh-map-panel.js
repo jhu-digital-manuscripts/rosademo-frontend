@@ -160,47 +160,56 @@ export default function JHMapPanel(props) {
       windowId={windowId}
       id={id}
     >
-      <div>
-        <Map
-          scrollWheelZoom={false}
-          center={Object.values(locations)[0]?.coords}
-          zoom={6}
-          touchZoom={false}
-          style={{ height: '250px' }}
-        >
-          <TileLayer
-            //attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
-          />
-          {Object.values(locations)
-            .filter((location) => location.coords !== undefined)
-            .map((element) => {
-              return (
-                <Marker position={element.coords}>
-                  <Popup autoPan={true}>{element.title}</Popup>
-                </Marker>
-              );
-            })}
-        </Map>
-      </div>
-      <div
-        id='mapPanelExpandButton'
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          margin: '8px',
-        }}
-      >
-        <Button
-          variant='contained'
-          color='primary'
-          size='small'
-          onClick={handleClickOpen}
-        >
-          Enlarge Map
-        </Button>
-        <MapDialog open={open} onClose={handleClose} locations={locations} />
-      </div>
+      {annotations.length > 0 ? (
+        <div>
+          <Map
+            scrollWheelZoom={false}
+            center={Object.values(locations)[0]?.coords}
+            zoom={6}
+            touchZoom={false}
+            style={{ height: '250px' }}
+          >
+            <TileLayer
+              //attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
+            />
+            {Object.values(locations)
+              .filter((location) => location.coords !== undefined)
+              .map((element) => {
+                return (
+                  <Marker position={element.coords}>
+                    <Popup autoPan={true}>{element.title}</Popup>
+                  </Marker>
+                );
+              })}
+          </Map>
+          <div
+            id='mapPanelExpandButton'
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              margin: '8px',
+            }}
+          >
+            <Button
+              variant='contained'
+              color='primary'
+              size='small'
+              onClick={handleClickOpen}
+            >
+              Enlarge Map
+            </Button>
+            <MapDialog
+              open={open}
+              onClose={handleClose}
+              locations={locations}
+            />
+          </div>
+        </div>
+      ) : (
+        <div></div>
+      )}
+
       <div style={{ padding: '8px' }}>
         <Typography>{Object.values(locations).length} locations:</Typography>
       </div>
