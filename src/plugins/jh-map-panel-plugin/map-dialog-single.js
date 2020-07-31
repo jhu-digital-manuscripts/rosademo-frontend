@@ -46,7 +46,9 @@ export default function MapDialogSingle(props) {
             <Popup autoPan={true}>{location.title}</Popup>
           </Marker>
         </Map>
-        <div style={{ width: '25%' }}>
+        <div
+          style={{ width: '25%', paddingLeft: '16px', paddingRight: '16px' }}
+        >
           <div id='dialogLocationDetails'>
             <Typography variant='subtitle2'>
               <span>Description: </span>
