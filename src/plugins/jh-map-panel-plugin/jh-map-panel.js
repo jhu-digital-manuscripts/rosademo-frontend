@@ -3,62 +3,10 @@ import PropTypes from 'prop-types';
 import CompanionWindow from 'mirador/dist/es/src/containers/CompanionWindow';
 import ns from 'mirador/dist/es/src/config/css-ns';
 import SanitizedHtml from 'mirador/dist/es/src/containers/SanitizedHtml';
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Typography,
-} from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
-
-function MapDialog(props) {
-  const { onClose, open, locations } = props;
-
-  const handleClose = () => {
-    onClose();
-  };
-
-  return (
-    <Dialog
-      onClose={handleClose}
-      aria-labelledby='simple-dialog-title'
-      open={open}
-      maxWidth='lg'
-      fullWidth={true}
-    >
-      <DialogTitle id='simple-dialog-title'>Locations</DialogTitle>
-      <DialogContent>
-        <Map
-          scrollWheelZoom={false}
-          center={Object.values(locations)[0]?.coords}
-          zoom={8}
-          touchZoom={false}
-          style={{ height: '750px' }}
-        >
-          <TileLayer
-            //attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
-          />
-          {Object.values(locations)
-            .filter((location) => location.coords !== undefined)
-            .map((element) => {
-              return (
-                <Marker position={element.coords}>
-                  <Popup autoPan={true}>{element.title}</Popup>
-                </Marker>
-              );
-            })}
-        </Map>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-MapDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-};
+import MapDialogAll from './map-dialog-all';
+import MapDialogSingle from './map-dialog-single';
 
 function getGeorefMapData(annotation) {
   const body = annotation.body.filter((body) => body.purpose === 'identifying');
@@ -98,16 +46,27 @@ function getGeorefMapData(annotation) {
  * @param {object} props
  */
 export default function JHMapPanel(props) {
-  const [open, setOpen] = useState(false);
+  const [openAll, setOpenAll] = useState(false);
+  const [openSingle, setOpenSingle] = useState(false);
   const [locations, setLocations] = useState({});
+  const [locationForSingleDialog, setSingleLocation] = useState({});
   const [pending, setPending] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleOpenAll = () => {
+    setOpenAll(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseAll = () => {
+    setOpenAll(false);
+  };
+
+  const handleOpenSingle = (loc) => {
+    setOpenSingle(true);
+    setSingleLocation(loc);
+  };
+
+  const handleCloseSingle = () => {
+    setOpenSingle(false);
   };
 
   const {
@@ -177,7 +136,7 @@ export default function JHMapPanel(props) {
               .filter((location) => location.coords !== undefined)
               .map((element) => {
                 return (
-                  <Marker position={element.coords}>
+                  <Marker position={element.coords} key={element.annotationId}>
                     <Popup autoPan={true}>{element.title}</Popup>
                   </Marker>
                 );
@@ -195,13 +154,13 @@ export default function JHMapPanel(props) {
               variant='contained'
               color='primary'
               size='small'
-              onClick={handleClickOpen}
+              onClick={handleOpenAll}
             >
               Enlarge Map
             </Button>
-            <MapDialog
-              open={open}
-              onClose={handleClose}
+            <MapDialogAll
+              open={openAll}
+              onClose={handleCloseAll}
               locations={locations}
             />
           </div>
@@ -217,9 +176,15 @@ export default function JHMapPanel(props) {
         {Object.values(locations)
           .filter((loc) => loc.details !== undefined)
           .map((location) => {
-            console.log(location);
+            {
+              /* console.log(location); */
+            }
             return (
-              <>
+              <div
+                key={location.annotationId}
+                id='location'
+                onClick={() => handleOpenSingle(location)}
+              >
                 <div
                   style={{
                     fontStyle: 'italic',
@@ -241,10 +206,15 @@ export default function JHMapPanel(props) {
                     />
                   </Typography>
                 </div>
-              </>
+              </div>
             );
           })}
       </div>
+      <MapDialogSingle
+        open={openSingle}
+        onClose={handleCloseSingle}
+        location={locationForSingleDialog}
+      />
     </CompanionWindow>
   );
 }
