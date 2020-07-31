@@ -8,6 +8,10 @@
   display: inline;
 }
 
+#dialogLocationDetails p {
+  margin: 0;
+}
+
 /* .SanitizedHtml-root-113 .mirador-third-party-html {
   margin: 0;
 } */

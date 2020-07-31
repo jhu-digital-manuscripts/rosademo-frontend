@@ -16,12 +16,15 @@ function getGeorefMapData(annotation) {
     return fetch(georefUrl, { method: 'GET' })
       .then((result) => result.json())
       .then((data) => {
+        console.log(data);
         return {
+          pleiadesId: data.url,
           annotationId: annotation.id,
           coords: data.reprPoint?.reverse(),
           features: data.features,
           title: data.title,
           details: data.details,
+          names: data.names,
         };
       })
       .catch((error) => {
